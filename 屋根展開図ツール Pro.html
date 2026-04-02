@@ -1,0 +1,2330 @@
+<!DOCTYPE html>
+<!-- saved from url=(0057)file:///Users/tamaiosamuiwataru/Downloads/roof-v4_24.html -->
+<html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>屋根展開図ツール Pro</title>
+<link href="./屋根展開図ツール Pro_files/css2" rel="stylesheet">
+<style>
+:root{
+  --bg:#0c0e14;--s1:#111420;--s2:#161c2c;--s3:#1c2338;
+  --b1:#232d44;--b2:#2c3a56;
+  --amber:#f0a500;--amber2:#ffd166;
+  --blue:#4b8df8;--green:#3ecf8e;--red:#f87171;
+  --purple:#a78bfa;--teal:#22d3ee;--orange:#fb923c;
+  --ridge-col:#fde68a;--eave-col:#4b8df8;--keraba-col:#3ecf8e;
+  --valley-col:#fb923c;--hip-col:#c4a832;
+  --txt:#dde4f5;--txt2:#7a85a8;--txt3:#3d4868;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--txt);
+  display:flex;flex-direction:column;}
+
+/* HEADER */
+header{
+  height:52px;background:var(--s1);border-bottom:1px solid var(--b1);
+  display:flex;align-items:center;padding:0 14px;gap:8px;flex-shrink:0;z-index:30;
+}
+.logo{display:flex;align-items:center;gap:8px;margin-right:6px;}
+.logo-mark{width:32px;height:32px;background:linear-gradient(135deg,rgba(75,141,248,.2),rgba(240,165,0,.15));
+  border:1px solid var(--b2);border-radius:7px;display:flex;align-items:center;justify-content:center;}
+.logo-t{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;}
+.logo-s{font-size:8px;color:var(--txt3);letter-spacing:.12em;text-transform:uppercase;}
+.hdiv{width:1px;height:22px;background:var(--b1);margin:0 4px;}
+.hsep{flex:1;}
+
+/* Workflow steps */
+.steps{display:flex;align-items:center;gap:3px;}
+.step{
+  display:flex;align-items:center;gap:6px;padding:5px 11px;border-radius:7px;
+  border:1.5px solid var(--b1);background:var(--s2);color:var(--txt3);
+  font-size:10.5px;cursor:pointer;transition:all .14s;white-space:nowrap;
+  font-family:'Noto Sans JP',sans-serif;
+}
+.step:hover{border-color:var(--b2);color:var(--txt2);}
+.step.active{border-color:var(--amber);background:rgba(240,165,0,.1);color:var(--amber);}
+.step.done{border-color:var(--green);color:var(--green);background:rgba(62,207,142,.07);}
+.step-num{width:16px;height:16px;border-radius:50%;background:var(--b2);
+  display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;}
+.step.active .step-num{background:var(--amber);color:#0c0e14;}
+.step.done .step-num{background:var(--green);color:#0c0e14;}
+.step-arr{color:var(--b2);font-size:12px;}
+
+/* Buttons */
+.btn{
+  display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:6px;
+  border:1.5px solid var(--b1);background:var(--s2);color:var(--txt2);
+  font-size:11px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;
+  transition:all .13s;white-space:nowrap;
+}
+.btn:hover{border-color:var(--b2);color:var(--txt);}
+.btn.active{border-color:var(--amber);background:rgba(240,165,0,.12);color:var(--amber);}
+.btn.primary{background:var(--amber);border-color:var(--amber);color:#0c0e14;font-weight:700;}
+.btn.primary:hover{background:var(--amber2);}
+.btn.success{background:var(--green);border-color:var(--green);color:#0c0e14;font-weight:700;}
+.btn.danger{border-color:var(--red);color:var(--red);}
+.btn:disabled{opacity:.35;cursor:not-allowed;}
+
+/* MAIN */
+.main{display:flex;flex:1;overflow:hidden;}
+
+/* SIDEBAR */
+.sidebar{
+  width:252px;min-width:240px;background:var(--s1);border-right:1px solid var(--b1);
+  display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0;
+}
+.sb-sec{padding:11px 13px;border-bottom:1px solid var(--b1);}
+.sb-lbl{font-size:9px;font-weight:700;letter-spacing:.17em;text-transform:uppercase;
+  color:var(--txt3);margin-bottom:8px;display:flex;align-items:center;gap:5px;}
+.sb-lbl::after{content:'';flex:1;height:1px;background:var(--b1);}
+
+/* Input rows */
+.inp-row{display:flex;align-items:center;gap:7px;margin-bottom:6px;}
+.inp-lbl{font-size:10px;color:var(--txt2);width:62px;flex-shrink:0;}
+.inp{
+  flex:1;background:var(--s2);border:1.5px solid var(--b1);border-radius:6px;
+  color:var(--txt);font-family:'IBM Plex Mono',monospace;font-size:12px;
+  padding:5px 8px;outline:none;transition:border-color .13s;
+}
+.inp:focus{border-color:var(--amber);}
+.inp-unit{font-size:10px;color:var(--txt3);white-space:nowrap;}
+
+/* Color picker */
+.color-inp{width:28px;height:26px;border-radius:5px;border:2px solid var(--b2);cursor:pointer;padding:0;}
+
+/* Face list */
+.face-item{
+  display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:6px;
+  border:1.5px solid var(--b1);background:var(--s2);margin-bottom:4px;cursor:pointer;
+  transition:all .13s;
+}
+.face-item:hover{border-color:var(--b2);}
+.face-item.sel{border-color:var(--amber);background:rgba(240,165,0,.07);}
+.f-dot{width:9px;height:9px;border-radius:2px;flex-shrink:0;}
+.f-name{font-size:11px;flex:1;font-weight:500;}
+.f-info{font-size:9px;color:var(--txt3);font-family:'IBM Plex Mono',monospace;}
+.f-del{background:none;border:none;color:var(--txt3);cursor:pointer;font-size:13px;
+  border-radius:3px;transition:color .13s;padding:0 2px;}
+.f-del:hover{color:var(--red);}
+
+/* Stats */
+.stats-g{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+.sc{background:var(--s2);border:1px solid var(--b1);border-radius:6px;padding:6px 8px;}
+.sc-l{font-size:9px;color:var(--txt3);margin-bottom:2px;}
+.sc-v{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:var(--green);}
+.sc-u{font-size:9px;color:var(--txt3);}
+
+/* Edge legend */
+.el{display:flex;align-items:center;gap:7px;font-size:10px;color:var(--txt2);margin-bottom:4px;cursor:pointer;}
+.el-bar{height:3px;width:22px;border-radius:2px;flex-shrink:0;}
+.el:hover .el-bar{transform:scaleY(1.5);}
+
+/* CANVAS */
+.canvas-wrap{flex:1;position:relative;overflow:hidden;background:var(--bg);display:flex;flex-direction:column;}
+#c{display:block;}
+
+/* Status */
+.status{
+  position:absolute;bottom:0;left:0;right:0;height:26px;
+  background:rgba(17,20,32,.92);border-top:1px solid var(--b1);
+  display:flex;align-items:center;padding:0 12px;gap:16px;
+  font-size:10px;color:var(--txt3);font-family:'IBM Plex Mono',monospace;
+  pointer-events:none;
+}
+.s-pos{color:var(--txt2);}
+
+/* Hint */
+.hint{
+  position:absolute;top:10px;left:50%;transform:translateX(-50%);
+  background:rgba(17,20,32,.94);border:1px solid var(--b2);border-radius:8px;
+  padding:7px 16px;font-size:11px;color:var(--txt2);pointer-events:none;
+  opacity:0;transition:opacity .25s;white-space:nowrap;z-index:20;
+}
+.hint.on{opacity:1;}
+
+/* Eave overlay panel */
+.eave-panel{
+  position:absolute;top:12px;right:12px;background:var(--s1);border:1px solid var(--b2);
+  border-radius:10px;padding:14px 16px;width:220px;z-index:20;
+  box-shadow:0 8px 32px rgba(0,0,0,.5);
+}
+.eave-title{font-size:11px;font-weight:700;color:var(--amber);margin-bottom:10px;}
+.big-btn{
+  width:100%;padding:9px;border-radius:7px;border:none;
+  font-family:'Noto Sans JP',sans-serif;font-size:12px;font-weight:700;cursor:pointer;
+  transition:all .13s;margin-top:4px;
+}
+.big-btn.amber{background:var(--amber);color:#0c0e14;}
+.big-btn.amber:hover{background:var(--amber2);}
+.big-btn.green{background:var(--green);color:#0c0e14;}
+.big-btn.green:hover{background:#4aeaa0;}
+
+/* Line type selector */
+.lt-sel{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;}
+.pitch-btn{
+  padding:2px 5px;border-radius:4px;border:1px solid var(--txt3);
+  background:transparent;color:var(--txt2);font-size:9.5px;cursor:pointer;
+  transition:all 0.15s;font-family:IBM Plex Mono,monospace;min-width:30px;text-align:center;
+}
+.pitch-btn:hover{border-color:var(--accent);color:var(--accent);}
+.pitch-btn.sel-pitch{
+  background:var(--accent);color:#0c0e14;border-color:var(--accent);
+  font-weight:700;
+}
+.lt-btn{
+  padding:4px 9px;border-radius:5px;border:1.5px solid var(--b1);
+  background:var(--s2);color:var(--txt3);font-size:10px;cursor:pointer;
+  font-family:'Noto Sans JP',sans-serif;transition:all .12s;
+}
+.lt-btn:hover{border-color:var(--b2);color:var(--txt2);}
+.lt-btn.sel-lt{font-weight:700;}
+
+/* No-content */
+.empty{padding:16px;text-align:center;color:var(--txt3);font-size:11px;line-height:1.8;}
+.empty span{color:var(--amber);opacity:.7;}
+
+/* View tabs */
+.vtabs{display:flex;gap:2px;background:var(--s2);border:1px solid var(--b1);border-radius:7px;padding:3px;}
+.vtab{padding:4px 10px;border-radius:4px;border:none;background:none;
+  color:var(--txt2);font-size:11px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .13s;}
+.vtab.on{background:var(--b2);color:var(--amber);}
+
+/* Unfold drawer */
+.unfold-panel{
+  position:absolute;top:0;right:0;bottom:0;left:0;
+  background:var(--bg);z-index:10;display:flex;flex-direction:column;
+  transform:translateY(100%);transition:transform .25s;overflow:hidden;
+}
+.unfold-panel.open{transform:translateY(0);}
+.unfold-hdr{
+  height:42px;background:var(--s1);border-bottom:1px solid var(--b1);
+  display:flex;align-items:center;padding:0 14px;gap:10px;flex-shrink:0;
+}
+.unfold-body{flex:1;overflow:auto;padding:24px;display:flex;align-items:flex-start;
+  justify-content:center;flex-wrap:wrap;gap:24px;}
+
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:var(--s1);}
+::-webkit-scrollbar-thumb{background:var(--b2);border-radius:2px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-mark">
+      <svg width="18" height="16" viewBox="0 0 18 16" fill="none">
+        <polygon points="9,1 17,15 1,15" fill="none" stroke="var(--amber)" stroke-width="1.5"></polygon>
+        <polygon points="4,15 14,15 12,9 6,9" fill="rgba(75,141,248,.3)" stroke="var(--blue)" stroke-width="1"></polygon>
+      </svg>
+    </div>
+    <div>
+      <div class="logo-t">屋根展開図ツール</div>
+      <div class="logo-s">Professional Edition</div>
+    </div>
+  </div>
+  <div class="hdiv"></div>
+
+  <!-- Workflow steps -->
+  <div class="steps">
+    <div class="step active" id="st1" onclick="goStep(1)">
+      <span class="step-num">1</span>柱芯入力
+    </div>
+    <span class="step-arr">›</span>
+    <div class="step" id="st2" onclick="goStep(2)">
+      <span class="step-num">2</span>軒の出
+    </div>
+    <span class="step-arr">›</span>
+    <div class="step" id="st3" onclick="goStep(3)">
+      <span class="step-num">3</span>棟・隅棟
+    </div>
+    <span class="step-arr">›</span>
+    <div class="step" id="st4" onclick="goStep(4)">
+      <span class="step-num">4</span>面認識・設定
+    </div>
+  </div>
+
+  <div class="hdiv"></div>
+  <!-- Pan / select tools -->
+  <button class="btn" id="btnPan" onclick="setTool(&#39;pan&#39;)" title="P">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>移動
+  </button>
+  <button class="btn active" id="btnSel" onclick="setTool(&#39;select&#39;)" title="S">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 2l4 9 2-4 4-2L2 2z" stroke="currentColor" stroke-width="1.3" fill="none"></path></svg>選択
+  </button>
+  <!-- Grid -->
+  <select id="gridSel" onchange="setGrid(this.value)" style="background:var(--s2);border:1.5px solid var(--b1);color:var(--txt2);
+    font-size:10.5px;padding:4px 7px;border-radius:5px;cursor:pointer;">
+    <option value="455" selected="">455/910mm</option>
+    <option value="910">910/1820mm</option>
+    <option value="1000">1000mm</option>
+  </select>
+  <div class="hsep"></div>
+  <div class="vtabs">
+    <button class="vtab on" id="vtPlan" onclick="setView(&#39;plan&#39;)">平面図</button>
+    <button class="vtab" id="vtUnfold" onclick="setView(&#39;unfold&#39;)">展開図</button>
+  </div>
+  <button class="btn primary" onclick="generateUnfolding()">
+    <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><polygon points="2,1 10,5.5 2,10" fill="currentColor"></polygon></svg>
+    展開図を生成
+  </button>
+  <button class="btn" onclick="exportSVG()">
+    <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M5.5 1v6M3 5l2.5 2.5L8 5M1 9v1a.5.5 0 00.5.5h9A.5.5 0 0011 10V9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"></path></svg>
+    SVG
+  </button>
+  <button class="btn" id="btnUndo" onclick="undo()" disabled="" title="Ctrl+Z" style="border-color:var(--purple);color:var(--purple);">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6a4 4 0 104 -4H3M3 2L1 4l2 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    Undo
+  </button>
+  <button class="btn danger" onclick="clearAll()">クリア</button>
+</header>
+
+<div class="main">
+<!-- SIDEBAR -->
+<div class="sidebar">
+
+  <!-- Step 1: Footprint -->
+  <div class="sb-sec" id="sbStep1">
+    <div class="sb-lbl">① 柱芯ライン</div>
+    <div id="fpStatus" class="empty"><span>キャンバスをクリックして<br>建物の柱芯を描いてください</span><br><br>ダブルクリック or 始点付近で閉じる<br>Backspace で頂点を戻す</div>
+    <div id="fpInfo" style="display:none;">
+      <div style="font-size:10px;color:var(--txt2);margin-bottom:8px;" id="fpStats"></div>
+      <button class="big-btn amber" onclick="goStep(2)">軒の出を設定する →</button>
+    </div>
+  </div>
+
+  <!-- Step 2: Eave overhang -->
+  <div class="sb-sec" id="sbStep2" style="display:none;">
+    <div class="sb-lbl">② 軒の出</div>
+    <div class="inp-row">
+      <span class="inp-lbl">軒の出</span>
+      <input class="inp" id="eaveOffset" type="number" value="455" min="0" max="3000" step="5">
+      <span class="inp-unit">mm</span>
+    </div>
+    <div class="inp-row">
+      <span class="inp-lbl">ケラバ出</span>
+      <input class="inp" id="kerabaOffset" type="number" value="455" min="0" max="3000" step="5">
+      <span class="inp-unit">mm</span>
+    </div>
+    <button class="big-btn amber" onclick="applyEaveOffset()" style="margin-top:4px;">屋根アウトライン生成</button>
+    <div style="font-size:9px;color:var(--txt3);margin-top:7px;line-height:1.6;">
+      ※ 全辺に同じ軒の出を適用します<br>辺ごとの設定は後で個別に調整できます
+    </div>
+    <div id="eaveEditSection" style="display:none;margin-top:8px;">
+      <div class="sb-lbl" style="margin-top:4px;">アウトライン手動編集</div>
+      <div style="font-size:9px;color:var(--txt3);line-height:1.6;margin-bottom:7px;">
+        頂点をドラッグして移動<br>辺をクリックで頂点追加<br>頂点をDeleteキーで削除
+      </div>
+      <button class="big-btn" id="btnEditEave" style="background:var(--purple);color:#0c0e14;font-weight:700;margin-bottom:4px;" onclick="toggleEaveEdit()">
+        ✎ アウトライン編集モード
+      </button>
+      <button class="btn" style="width:100%;justify-content:center;font-size:10px;" onclick="applyEaveOffset()">↺ オフセットを再適用</button>
+    </div>
+  </div>
+
+  <!-- Step 3: Ridge lines -->
+  <div class="sb-sec" id="sbStep3" style="display:none;">
+    <div class="sb-lbl">③ 棟・隅棟ライン</div>
+    <div class="lt-sel" id="ltSel">
+      <button class="lt-btn sel-lt" data-t="ridge" onclick="selectLineType(&#39;ridge&#39;)" style="border-color:var(--ridge-col);color:var(--ridge-col);">棟</button>
+      <button class="lt-btn" data-t="hip" onclick="selectLineType(&#39;hip&#39;)" style="border-color:var(--hip-col);color:var(--hip-col);">隅棟</button>
+      <button class="lt-btn" data-t="valley" onclick="selectLineType(&#39;valley&#39;)" style="border-color:var(--valley-col);color:var(--valley-col);">谷</button>
+      <button class="lt-btn" data-t="keraba" onclick="selectLineType(&#39;keraba&#39;)" style="border-color:var(--keraba-col);color:var(--keraba-col);">ケラバ</button>
+    </div>
+    <div style="font-size:9px;color:var(--txt3);line-height:1.6;margin-bottom:8px;">
+      軒先ライン上の点 または 既存の線の端点にスナップします<br>
+      屋根アウトライン内をクリックして始点→終点で線を引く
+    </div>
+    <button class="btn danger" onclick="undo()" style="width:100%;margin-bottom:6px;justify-content:center;padding:6px;">
+      ← 最後のラインを取り消す (Ctrl+Z)
+    </button>
+    <!-- Global pitch selector added before face detection -->
+    <div style="margin-bottom:8px;">
+      <div class="sb-lbl" style="margin-bottom:5px;">屋根勾配（全面デフォルト）</div>
+      <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;max-height:72px;overflow-y:auto;padding:2px 0;" id="pitchBtns">
+        <button class="pitch-btn" data-p="0.5" onclick="setDefaultPitch(0.5)">0.5</button>
+        <button class="pitch-btn" data-p="1" onclick="setDefaultPitch(1)">1</button>
+        <button class="pitch-btn" data-p="1.5" onclick="setDefaultPitch(1.5)">1.5</button>
+        <button class="pitch-btn" data-p="2" onclick="setDefaultPitch(2)">2</button>
+        <button class="pitch-btn" data-p="2.5" onclick="setDefaultPitch(2.5)">2.5</button>
+        <button class="pitch-btn" data-p="3" onclick="setDefaultPitch(3)">3</button>
+        <button class="pitch-btn" data-p="3.5" onclick="setDefaultPitch(3.5)">3.5</button>
+        <button class="pitch-btn" data-p="4" onclick="setDefaultPitch(4)">4</button>
+        <button class="pitch-btn" data-p="4.5" onclick="setDefaultPitch(4.5)">4.5</button>
+        <button class="pitch-btn sel-pitch" data-p="5" onclick="setDefaultPitch(5)">5</button>
+        <button class="pitch-btn" data-p="5.5" onclick="setDefaultPitch(5.5)">5.5</button>
+        <button class="pitch-btn" data-p="6" onclick="setDefaultPitch(6)">6</button>
+        <button class="pitch-btn" data-p="6.5" onclick="setDefaultPitch(6.5)">6.5</button>
+        <button class="pitch-btn" data-p="7" onclick="setDefaultPitch(7)">7</button>
+        <button class="pitch-btn" data-p="7.5" onclick="setDefaultPitch(7.5)">7.5</button>
+        <button class="pitch-btn" data-p="8" onclick="setDefaultPitch(8)">8</button>
+        <button class="pitch-btn" data-p="8.5" onclick="setDefaultPitch(8.5)">8.5</button>
+        <button class="pitch-btn" data-p="9" onclick="setDefaultPitch(9)">9</button>
+        <button class="pitch-btn" data-p="9.5" onclick="setDefaultPitch(9.5)">9.5</button>
+        <button class="pitch-btn" data-p="10" onclick="setDefaultPitch(10)">10</button>
+        <button class="pitch-btn" data-p="10.5" onclick="setDefaultPitch(10.5)">10.5</button>
+        <button class="pitch-btn" data-p="11" onclick="setDefaultPitch(11)">11</button>
+        <button class="pitch-btn" data-p="11.5" onclick="setDefaultPitch(11.5)">11.5</button>
+        <button class="pitch-btn" data-p="12" onclick="setDefaultPitch(12)">12</button>
+        <button class="pitch-btn" data-p="12.5" onclick="setDefaultPitch(12.5)">12.5</button>
+        <button class="pitch-btn" data-p="13" onclick="setDefaultPitch(13)">13</button>
+        <button class="pitch-btn" data-p="13.5" onclick="setDefaultPitch(13.5)">13.5</button>
+        <button class="pitch-btn" data-p="14" onclick="setDefaultPitch(14)">14</button>
+        <button class="pitch-btn" data-p="14.5" onclick="setDefaultPitch(14.5)">14.5</button>
+        <button class="pitch-btn" data-p="15" onclick="setDefaultPitch(15)">15</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;margin-top:5px;">
+        <span style="font-size:9px;color:var(--txt3);">寸 /10</span>
+        <input class="inp" id="pitchCustom" type="number" min="0.5" max="15" step="0.5" value="5" style="width:60px;" oninput="setDefaultPitch(+this.value,true)">
+        <span style="font-size:10px;color:var(--txt2);">/10</span>
+      </div>
+    </div>
+    <button class="big-btn green" onclick="detectFaces()">屋根面を自動検出 →</button>
+  </div>
+
+  <!-- Step 4: Face properties -->
+  <div class="sb-sec" id="sbStep4" style="display:none;">
+    <div class="sb-lbl">④ 面リスト</div>
+    <div id="faceList"><div class="empty">面が検出されていません</div></div>
+  </div>
+
+  <!-- Selected face props -->
+  <div class="sb-sec" id="propPanel" style="display:none;">
+    <div class="sb-lbl">面のプロパティ</div>
+    <div class="inp-row"><span class="inp-lbl">名称</span>
+      <input class="inp" id="pName" type="text" oninput="updateFaceProp(&#39;name&#39;,this.value)"></div>
+    <div style="margin-bottom:6px;">
+      <span class="inp-lbl" style="display:block;margin-bottom:4px;">勾配</span>
+      <div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:4px;max-height:72px;overflow-y:auto;padding:2px 0;" id="fPitchBtns">
+        <button class="pitch-btn" data-p="0.5" onclick="setFacePitch(0.5)">0.5</button>
+        <button class="pitch-btn" data-p="1" onclick="setFacePitch(1)">1</button>
+        <button class="pitch-btn" data-p="1.5" onclick="setFacePitch(1.5)">1.5</button>
+        <button class="pitch-btn" data-p="2" onclick="setFacePitch(2)">2</button>
+        <button class="pitch-btn" data-p="2.5" onclick="setFacePitch(2.5)">2.5</button>
+        <button class="pitch-btn" data-p="3" onclick="setFacePitch(3)">3</button>
+        <button class="pitch-btn" data-p="3.5" onclick="setFacePitch(3.5)">3.5</button>
+        <button class="pitch-btn" data-p="4" onclick="setFacePitch(4)">4</button>
+        <button class="pitch-btn" data-p="4.5" onclick="setFacePitch(4.5)">4.5</button>
+        <button class="pitch-btn" data-p="5" onclick="setFacePitch(5)">5</button>
+        <button class="pitch-btn" data-p="5.5" onclick="setFacePitch(5.5)">5.5</button>
+        <button class="pitch-btn" data-p="6" onclick="setFacePitch(6)">6</button>
+        <button class="pitch-btn" data-p="6.5" onclick="setFacePitch(6.5)">6.5</button>
+        <button class="pitch-btn" data-p="7" onclick="setFacePitch(7)">7</button>
+        <button class="pitch-btn" data-p="7.5" onclick="setFacePitch(7.5)">7.5</button>
+        <button class="pitch-btn" data-p="8" onclick="setFacePitch(8)">8</button>
+        <button class="pitch-btn" data-p="8.5" onclick="setFacePitch(8.5)">8.5</button>
+        <button class="pitch-btn" data-p="9" onclick="setFacePitch(9)">9</button>
+        <button class="pitch-btn" data-p="9.5" onclick="setFacePitch(9.5)">9.5</button>
+        <button class="pitch-btn" data-p="10" onclick="setFacePitch(10)">10</button>
+        <button class="pitch-btn" data-p="10.5" onclick="setFacePitch(10.5)">10.5</button>
+        <button class="pitch-btn" data-p="11" onclick="setFacePitch(11)">11</button>
+        <button class="pitch-btn" data-p="11.5" onclick="setFacePitch(11.5)">11.5</button>
+        <button class="pitch-btn" data-p="12" onclick="setFacePitch(12)">12</button>
+        <button class="pitch-btn" data-p="12.5" onclick="setFacePitch(12.5)">12.5</button>
+        <button class="pitch-btn" data-p="13" onclick="setFacePitch(13)">13</button>
+        <button class="pitch-btn" data-p="13.5" onclick="setFacePitch(13.5)">13.5</button>
+        <button class="pitch-btn" data-p="14" onclick="setFacePitch(14)">14</button>
+        <button class="pitch-btn" data-p="14.5" onclick="setFacePitch(14.5)">14.5</button>
+        <button class="pitch-btn" data-p="15" onclick="setFacePitch(15)">15</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:5px;">
+        <input class="inp" id="pPitch" type="number" min="0.5" max="15" step="0.5" style="width:60px;" oninput="setFacePitch(+this.value,true)">
+        <span class="inp-unit">/10</span>
+      </div>
+    </div>
+    <div class="inp-row"><span class="inp-lbl">色</span>
+      <input class="color-inp" id="pColor" type="color" oninput="updateFaceProp(&#39;color&#39;,this.value)">
+      <span style="font-size:9px;color:var(--txt3);margin-left:6px;">面の色</span></div>
+  </div>
+
+  <!-- Edge type legend -->
+  <div class="sb-sec">
+    <div class="sb-lbl">辺タイプ凡例</div>
+    <div class="el"><div class="el-bar" style="background:var(--ridge-col);"></div>棟（おね）</div>
+    <div class="el"><div class="el-bar" style="background:var(--eave-col);"></div>軒先（のきさき）</div>
+    <div class="el"><div class="el-bar" style="background:var(--keraba-col);"></div>ケラバ</div>
+    <div class="el"><div class="el-bar" style="background:var(--valley-col);"></div>谷（たに）</div>
+    <div class="el"><div class="el-bar" style="background:var(--hip-col);border:none;"></div>隅棟（すみむね）</div>
+  </div>
+
+  <!-- Stats -->
+  <div class="sb-sec">
+    <div class="sb-lbl">合計</div>
+    <div class="stats-g">
+      <div class="sc"><div class="sc-l">投影面積</div><span class="sc-v" id="stProj">—</span><span class="sc-u"> m²</span></div>
+      <div class="sc"><div class="sc-l">実面積</div><span class="sc-v" id="stReal">—</span><span class="sc-u"> m²</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- CANVAS -->
+<div class="canvas-wrap" id="cWrap">
+  <canvas id="c" width="1260" height="745" style="cursor: default;"></canvas>
+
+  <!-- Unfold panel -->
+  <div class="unfold-panel" id="unfoldPanel">
+    <div class="unfold-hdr">
+      <span style="font-size:11px;font-weight:700;color:var(--amber);">展開図</span>
+      <span id="ufStats" style="font-size:10px;color:var(--txt3);margin-left:8px;"></span>
+      <div style="flex:1;"></div>
+      <button class="btn" onclick="setView(&#39;plan&#39;)" style="font-size:10px;padding:3px 9px;">← 平面図に戻る</button>
+    </div>
+    <div class="unfold-body" id="ufBody">
+      <div style="color:var(--txt3);font-size:12px;">展開図を生成してください</div>
+    </div>
+  </div>
+
+  <div class="status">
+    <span class="s-pos" id="posLbl">X: 11.83m  Y: 7.28m</span>
+    <span id="msgLbl">ステップ1：柱芯ラインを描いてください</span>
+    <span style="margin-left:auto;" id="zoomLbl">100%</span>
+  </div>
+  <div class="hint" id="hintBox"></div>
+</div>
+</div>
+
+<script>
+// ====================================================
+// CONSTANTS
+// ====================================================
+const SC_BASE = 0.055;
+const SNAP_THR = 14; // px snap threshold
+const PALETTE = ['#4b8df8','#3ecf8e','#f0a500','#a78bfa','#f87171','#22d3ee','#fb923c','#fde68a','#e879f9','#67e8f9'];
+const EDGE_COL = {unknown:'#3d4868',ridge:'#fde68a',eave:'#4b8df8',keraba:'#3ecf8e',valley:'#fb923c',hip:'#c4a832'};
+const EDGE_LBL = {unknown:'未設定',ridge:'棟',eave:'軒先',keraba:'ケラバ',valley:'谷',hip:'隅棟'};
+const EDGE_SW  = {unknown:1.2,ridge:2.5,eave:2.5,keraba:2,valley:2,hip:2};
+const EDGE_CYCLE = ['unknown','ridge','eave','keraba','valley','hip'];
+
+// ====================================================
+// STATE
+// ====================================================
+// ====================================================
+// UNDO HISTORY
+// ====================================================
+const HISTORY = [];   // array of serialized state snapshots
+const MAX_HIST = 60;
+
+function saveHistory(){
+  const snap = JSON.stringify({
+    footprint: S.footprint,
+    eaveOutline: S.eaveOutline,
+    ridgeLines: S.ridgeLines,
+    faces: S.faces,
+    drawPts: S.drawPts,
+    drawLine: S.drawLine,
+    step: S.step,
+  });
+  HISTORY.push(snap);
+  if(HISTORY.length > MAX_HIST) HISTORY.shift();
+  updateUndoBtn();
+}
+
+function undo(){
+  if(HISTORY.length===0) return;
+  const snap = JSON.parse(HISTORY.pop());
+  S.footprint    = snap.footprint;
+  S.eaveOutline  = snap.eaveOutline;
+  S.ridgeLines   = snap.ridgeLines;
+  S.faces        = snap.faces;
+  S.drawPts      = snap.drawPts;
+  S.drawLine     = snap.drawLine;
+  // Restore step UI
+  goStep(snap.step, true); // true = silent (no side-effects)
+  updateFaceList();
+  updateStats();
+  updateUndoBtn();
+  draw();
+}
+
+function updateUndoBtn(){
+  const btn = document.getElementById('btnUndo');
+  if(btn) btn.disabled = HISTORY.length === 0;
+}
+
+let S = {
+  step: 1,
+  tool: 'draw',        // draw | pan | select
+  lineType: 'ridge',   // for step 3
+
+  // Step 1: Footprint (柱芯)
+  footprint: [],       // [{x,y}] closed polygon (mm)
+  drawPts: [],         // temp drawing points
+
+  // Step 2: Eave outline
+  eaveOutline: [],     // [{x,y}] closed polygon (mm)
+
+  // Step 3: Interior lines
+  ridgeLines: [],      // [{a:{x,y}, b:{x,y}, type}]
+  drawLine: null,      // {a:{x,y}} current line being drawn
+
+  // Step 4: Detected faces
+  faces: [],           // [{id, name, pitch, color, vertices:[{x,y}], edges:[{type}]}]
+  selectedFaceId: null,
+  colorIdx: 0,
+  defaultPitch: 5,   // global default pitch for new faces
+
+  // Eave outline editing
+  editingEave: false,
+  hoverEaveVert: null,   // index of hovered vertex
+  hoverEaveEdge: null,   // index of hovered edge (for adding vertex)
+  dragEaveVert: null,    // index being dragged
+
+  // Canvas
+  ox:100, oy:100, zoom:1.0,
+  isPanning:false, panStart:{x:0,y:0}, panOrigin:{x:0,y:0},
+  mouseSnap:{x:0,y:0,snap:false,snapType:''},
+  gridMm: 455,
+  snapMm: 455,
+  hoverEdge: null,     // {faceId, idx}
+  hoverRidgeLine: null,   // index into S.ridgeLines when hovering (step 3/4)
+  hoverRidgeEndpt: null,  // {idx, which:'a'|'b'} endpoint hover
+  dragRidgeEndpt: null,   // {idx, which} endpoint being dragged
+
+  lastSVG: null,
+  view: 'plan',
+};
+
+// ====================================================
+// CANVAS
+// ====================================================
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const cWrap = document.getElementById('cWrap');
+
+function resize(){
+  canvas.width = cWrap.clientWidth;
+  canvas.height = cWrap.clientHeight - 26;
+  draw();
+}
+new ResizeObserver(resize).observe(cWrap);
+
+// ====================================================
+// COORDINATE TRANSFORMS
+// ====================================================
+const sc = mm => mm * SC_BASE * S.zoom;
+const ms = px => px / SC_BASE / S.zoom;
+const toSc = (mx,my) => [mx*SC_BASE*S.zoom+S.ox, my*SC_BASE*S.zoom+S.oy];
+const toMo = (sx,sy) => [(sx-S.ox)/SC_BASE/S.zoom, (sy-S.oy)/SC_BASE/S.zoom];
+
+function snapPoint(mx, my){
+  // ── Priority-based snap system ──────────────────────────────────────────
+  // P1 (highest): Structural points — eave/footprint vertices, ridge endpoints, midpoints
+  // P2:           Grid intersections (always reliable)
+  // P3:           Edge projections (onto eave or ridge edges)
+  // Fallback:     Raw grid snap
+  //
+  // Threshold capped at 45% of grid spacing to avoid grabbing distant off-grid points.
+  // ────────────────────────────────────────────────────────────────────────
+  const g = S.snapMm;
+  const thr_raw = SNAP_THR / S.zoom / SC_BASE;
+  const thr = Math.min(thr_raw, g * 0.45);
+
+  // ── P1: Key structural vertices ─────────────────────────────────────────
+  const p1 = [];
+  for(const v of S.footprint)   p1.push(v);
+  for(const v of S.eaveOutline) p1.push(v);
+  for(const l of S.ridgeLines){ p1.push(l.a); p1.push(l.b); }
+  for(const v of S.drawPts)     p1.push(v);
+  if(S.drawLine) p1.push(S.drawLine.a);
+  // Eave edge midpoints and quarter-points
+  for(let i=0;i<S.eaveOutline.length;i++){
+    const n=(i+1)%S.eaveOutline.length;
+    const a=S.eaveOutline[i], b=S.eaveOutline[n];
+    p1.push({x:(a.x+b.x)/2,  y:(a.y+b.y)/2});
+    p1.push({x:a.x*0.75+b.x*0.25, y:a.y*0.75+b.y*0.25});
+    p1.push({x:a.x*0.25+b.x*0.75, y:a.y*0.25+b.y*0.75});
+  }
+
+  let bestP1=null, bestP1d=thr;
+  for(const v of p1){
+    const d=Math.hypot(v.x-mx,v.y-my);
+    if(d<bestP1d){bestP1d=d;bestP1={x:v.x,y:v.y,snap:true,snapType:'vertex'};}
+  }
+  if(bestP1) return bestP1;
+
+  // ── P2: Grid intersections ──────────────────────────────────────────────
+  const gx=Math.round(mx/g)*g, gy=Math.round(my/g)*g;
+  let bestP2=null, bestP2d=thr;
+  for(const dx of [-g,0,g]) for(const dy of [-g,0,g]){
+    const cx=gx+dx, cy=gy+dy;
+    const d=Math.hypot(cx-mx,cy-my);
+    if(d<bestP2d){bestP2d=d;bestP2={x:cx,y:cy,snap:true,snapType:'grid'};}
+  }
+
+  // ── P3: Edge projections (tighter threshold) ────────────────────────────
+  const thrProj = Math.min(thr*0.6, g*0.25);
+  let bestP3=null, bestP3d=thrProj;
+  const edgeSets=[];
+  if(S.step===3){
+    for(let i=0;i<S.eaveOutline.length;i++){
+      const n=(i+1)%S.eaveOutline.length;
+      edgeSets.push([S.eaveOutline[i],S.eaveOutline[n]]);
+    }
+    if(S.drawLine){
+      for(const l of S.ridgeLines) edgeSets.push([l.a,l.b]);
+    }
+  } else if(S.step===1&&S.drawPts.length>0){
+    for(let i=0;i<S.footprint.length;i++){
+      const n=(i+1)%S.footprint.length;
+      edgeSets.push([S.footprint[i],S.footprint[n]]);
+    }
+  }
+  for(const [a,b] of edgeSets){
+    const foot=projectOnSegment({x:mx,y:my},a,b);
+    if(foot){
+      const d=Math.hypot(foot.x-mx,foot.y-my);
+      if(d<bestP3d){bestP3d=d;bestP3={x:foot.x,y:foot.y,snap:true,snapType:'edge'};}
+    }
+  }
+
+  // P2 vs P3: prefer grid unless edge is clearly closer
+  if(bestP2&&bestP3) return bestP3d<bestP2d*0.8?bestP3:bestP2;
+  if(bestP2) return bestP2;
+  if(bestP3) return bestP3;
+
+  // Fallback: raw grid snap
+  return {x:gx,y:gy,snap:false,snapType:''};
+}
+
+function projectOnSegment(p, a, b){
+  const abx=b.x-a.x,aby=b.y-a.y;
+  const len2=abx*abx+aby*aby;
+  if(len2<1) return null;
+  const t=((p.x-a.x)*abx+(p.y-a.y)*aby)/len2;
+  if(t<0||t>1) return null;
+  return {x:a.x+t*abx, y:a.y+t*aby};
+}
+
+function distPtSeg(px,py,ax,ay,bx,by){
+  const abx=bx-ax,aby=by-ay,apx=px-ax,apy=py-ay;
+  const t=Math.max(0,Math.min(1,(apx*abx+apy*aby)/(abx*abx+aby*aby)||0));
+  return Math.hypot(apx-t*abx, apy-t*aby);
+}
+
+function polyArea(verts){
+  let a=0;const n=verts.length;
+  for(let i=0;i<n;i++){const j=(i+1)%n;a+=verts[i].x*verts[j].y-verts[j].x*verts[i].y;}
+  return Math.abs(a)/2;
+}
+
+function ptInPoly(px,py,poly){
+  const n=poly.length;let inside=false;
+  for(let i=0,j=n-1;i<n;j=i++){
+    const xi=poly[i].x,yi=poly[i].y,xj=poly[j].x,yj=poly[j].y;
+    if((yi>py)!==(yj>py)&&px<(xj-xi)*(py-yi)/(yj-yi)+xi) inside=!inside;
+  }
+  return inside;
+}
+
+// ====================================================
+// POLYGON OFFSET (for eave outline generation)
+// ====================================================
+function offsetPolygon(verts, dist){
+  // ─── Definitive robust polygon offset ─────────────────────────────────
+  // Algorithm: winding-based outward normals — NO point-in-polygon tests.
+  // Works correctly for any winding (CW/CCW), convex/non-convex shapes.
+  //
+  // Screen coords (Y↓):
+  //   area>0 → visually CW  → outward normal = 90°CW rotation = (ey/l, -ex/l)
+  //   area<0 → visually CCW → outward normal = 90°CCW         = (-ey/l, ex/l)
+  //   In both cases: outward = s*(ey/l, -ex/l) where s = sign(area)
+  //
+  // Cross product of consecutive edge directions detects convex/reflex:
+  //   CW polygon  (s= 1): convex → cross>0,  reflex → cross<0 → isReflex = (s·cross)<0
+  //   CCW polygon (s=-1): convex → cross<0,  reflex → cross>0 → isReflex = (s·cross)<0
+  //
+  // Convex  → miter intersection with miter-limit bevel fallback
+  // Reflex  → simple bevel (two offset points, no miter)
+  // ───────────────────────────────────────────────────────────────────────
+  // Pre-process: remove consecutive duplicate/near-identical vertices
+  const cleaned=[];
+  for(let i=0;i<verts.length;i++){
+    const nxt=verts[(i+1)%verts.length];
+    if(Math.hypot(verts[i].x-nxt.x,verts[i].y-nxt.y)>0.5) cleaned.push(verts[i]);
+  }
+  if(cleaned.length<3) return verts.map(v=>({x:v.x,y:v.y}));
+  verts=cleaned;
+
+  const n = verts.length;
+  if(n < 3) return verts.map(v=>({x:v.x,y:v.y}));
+
+  // Shoelace signed area
+  let area = 0;
+  for(let i=0;i<n;i++){
+    const j=(i+1)%n;
+    area += verts[i].x*verts[j].y - verts[j].x*verts[i].y;
+  }
+  const s = area >= 0 ? 1 : -1;
+
+  // Per-edge outward unit normals
+  const normals = [];
+  for(let i=0;i<n;i++){
+    const j=(i+1)%n;
+    const ex=verts[j].x-verts[i].x, ey=verts[j].y-verts[i].y;
+    const l=Math.hypot(ex,ey);
+    if(l<0.001){normals.push({nx:0,ny:0});continue;}
+    normals.push({nx: s*ey/l, ny: -s*ex/l});
+  }
+
+  const result = [];
+  for(let i=0;i<n;i++){
+    const curr = verts[i];
+    const ei   = (i-1+n)%n;
+    const N1   = normals[ei];  // normal of incoming edge
+    const N2   = normals[i];   // normal of outgoing edge
+
+    const prev = verts[(i-1+n)%n], next = verts[(i+1)%n];
+    const e1x=curr.x-prev.x, e1y=curr.y-prev.y, l1=Math.hypot(e1x,e1y);
+    const e2x=next.x-curr.x, e2y=next.y-curr.y, l2=Math.hypot(e2x,e2y);
+
+    if(l1<0.001||l2<0.001){
+      result.push({x:curr.x+N1.nx*dist, y:curr.y+N1.ny*dist}); continue;
+    }
+
+    const d1x=e1x/l1, d1y=e1y/l1, d2x=e2x/l2, d2y=e2y/l2;
+    const cross = d1x*d2y - d1y*d2x;
+
+    // Reflex corner: s*cross < 0
+    // ── Try miter for ALL corners (convex AND reflex) ───────────────────────
+    // At a reflex (concave) corner, the miter intersection still lies outside the
+    // polygon in the notch area — giving a clean right-angle offset corner.
+    // Only fall back to bevel if the miter points inward (dot≤0) or is too long.
+    const P1x=curr.x+N1.nx*dist, P1y=curr.y+N1.ny*dist;
+    const P2x=curr.x+N2.nx*dist, P2y=curr.y+N2.ny*dist;
+    const denom = d1x*d2y - d1y*d2x;
+    if(Math.abs(denom)<0.0001){result.push({x:P1x,y:P1y});continue;}
+    const dx=P2x-P1x, dy=P2y-P1y;
+    const t = (dx*d2y - dy*d2x)/denom;
+    const ox=P1x+t*d1x, oy=P1y+t*d1y;
+    const avgNx=(N1.nx+N2.nx)/2, avgNy=(N1.ny+N2.ny)/2;
+    const nlen=Math.hypot(avgNx,avgNy)||1;
+    const dot=(ox-curr.x)*avgNx/nlen+(oy-curr.y)*avgNy/nlen;
+    const ml=Math.hypot(ox-curr.x, oy-curr.y);
+    if(dot>0 && ml<dist*4){
+      result.push({x:ox, y:oy});       // clean miter for both convex & reflex
+    } else {
+      // Miter unusable (inward or too long): bevel fallback
+      result.push({x:P1x, y:P1y});
+      result.push({x:P2x, y:P2y});
+    }
+  }
+  return result;
+}
+
+// ====================================================
+// PLANAR GRAPH & FACE DETECTION
+// ====================================================
+const EPS = 0.5; // mm tolerance
+
+function ptEq(a,b){return Math.hypot(a.x-b.x,a.y-b.y)<EPS;}
+
+function segIntersect(a1,a2,b1,b2){
+  const dx1=a2.x-a1.x,dy1=a2.y-a1.y;
+  const dx2=b2.x-b1.x,dy2=b2.y-b1.y;
+  const denom=dx1*dy2-dy1*dx2;
+  if(Math.abs(denom)<0.0001) return null;
+  const dx3=b1.x-a1.x,dy3=b1.y-a1.y;
+  const t=(dx3*dy2-dy3*dx2)/denom;
+  const u=(dx3*dy1-dy3*dx1)/denom;
+  if(t>EPS/1000&&t<1-EPS/1000&&u>EPS/1000&&u<1-EPS/1000){
+    return {x:a1.x+t*dx1,y:a1.y+t*dy1,t,u};
+  }
+  return null;
+}
+
+function buildGraph(eaveVerts, ridgeLines){
+  // ─── Planar graph builder with T-intersection support ─────────────────
+  // Two-pass segment splitting:
+  //   Pass A – split segments where OTHER segments' endpoints land (T-joins)
+  //   Pass B – split segments at proper crossings
+  // This ensures ridgeline endpoints on eave edges create proper graph nodes.
+  // ──────────────────────────────────────────────────────────────────────
+
+  const EPS = 0.5; // mm
+
+  function ptEq(a,b){ return Math.hypot(a.x-b.x,a.y-b.y)<EPS; }
+
+  // Returns parameter t ∈ (0,1) strictly if p lies on interior of segment a-b
+  function ptOnSegInterior(p,a,b){
+    const dx=b.x-a.x, dy=b.y-a.y, l2=dx*dx+dy*dy;
+    if(l2<0.0001) return null;
+    const t=((p.x-a.x)*dx+(p.y-a.y)*dy)/l2;
+    if(t<=1e-9||t>=1-1e-9) return null;
+    const qx=a.x+t*dx, qy=a.y+t*dy;
+    if(Math.hypot(qx-p.x,qy-p.y)>EPS) return null;
+    return t;
+  }
+
+  // Collect all segments
+  const segments=[];
+  const n=eaveVerts.length;
+  for(let i=0;i<n;i++){
+    const j=(i+1)%n;
+    segments.push({a:{...eaveVerts[i]},b:{...eaveVerts[j]},type:'eave'});
+  }
+  for(const l of ridgeLines){
+    segments.push({a:{...l.a},b:{...l.b},type:l.type});
+  }
+
+  // Pass A: split segments where OTHER segments' endpoints touch the interior
+  function splitAtEndpoints(segs){
+    const result=[];
+    for(const seg of segs){
+      const splits=[];
+      for(const other of segs){
+        if(other===seg) continue;
+        for(const ep of [other.a, other.b]){
+          const t=ptOnSegInterior(ep,seg.a,seg.b);
+          if(t!==null) splits.push({t,x:ep.x,y:ep.y});
+        }
+      }
+      if(!splits.length){result.push(seg);continue;}
+      splits.sort((a,b)=>a.t-b.t);
+      const ded=[];
+      for(const sp of splits) if(!ded.length||Math.abs(sp.t-ded[ded.length-1].t)>1e-6) ded.push(sp);
+      let prev=seg.a;
+      for(const sp of ded){
+        const mid={x:sp.x,y:sp.y};
+        if(!ptEq(prev,mid)) result.push({a:prev,b:mid,type:seg.type});
+        prev=mid;
+      }
+      if(!ptEq(prev,seg.b)) result.push({a:prev,b:seg.b,type:seg.type});
+    }
+    return result;
+  }
+
+  // Pass B: split segments at proper crossing intersections
+  function splitAtCrossings(segs){
+    let allSegs=[...segs];
+    let changed=true; let iter=0;
+    while(changed&&iter++<30){
+      changed=false;
+      const newSegs=[];
+      for(let i=0;i<allSegs.length;i++){
+        const seg=allSegs[i]; const splits=[];
+        for(let j=0;j<allSegs.length;j++){
+          if(i===j) continue;
+          const a1=seg.a,a2=seg.b,b1=allSegs[j].a,b2=allSegs[j].b;
+          const dx1=a2.x-a1.x,dy1=a2.y-a1.y;
+          const dx2=b2.x-b1.x,dy2=b2.y-b1.y;
+          const denom=dx1*dy2-dy1*dx2;
+          if(Math.abs(denom)<0.0001) continue;
+          const dx3=b1.x-a1.x,dy3=b1.y-a1.y;
+          const t=(dx3*dy2-dy3*dx2)/denom;
+          const u=(dx3*dy1-dy3*dx1)/denom;
+          const l1=Math.hypot(dx1,dy1);
+          if(t>EPS/Math.max(l1,1)&&t<1-EPS/Math.max(l1,1)&&u>=0&&u<=1){
+            splits.push({t,x:a1.x+t*dx1,y:a1.y+t*dy1});
+          }
+        }
+        if(!splits.length){newSegs.push(seg);continue;}
+        changed=true;
+        splits.sort((a,b)=>a.t-b.t);
+        const ded=[];
+        for(const sp of splits) if(!ded.length||Math.abs(sp.t-ded[ded.length-1].t)>1e-6) ded.push(sp);
+        let prev=seg.a;
+        for(const sp of ded){
+          const mid={x:sp.x,y:sp.y};
+          if(!ptEq(prev,mid)) newSegs.push({a:prev,b:mid,type:seg.type});
+          prev=mid;
+        }
+        if(!ptEq(prev,seg.b)) newSegs.push({a:prev,b:seg.b,type:seg.type});
+        allSegs=newSegs;
+      }
+      allSegs=newSegs;
+    }
+    return allSegs;
+  }
+
+  let allSegs=splitAtEndpoints(segments);
+  allSegs=splitAtCrossings(allSegs);
+  allSegs=splitAtEndpoints(allSegs); // second pass after crossings
+
+  // Deduplicate vertices
+  const verts=[];
+  function addVert(p){
+    for(let i=0;i<verts.length;i++) if(ptEq(verts[i],p)) return i;
+    verts.push({x:p.x,y:p.y}); return verts.length-1;
+  }
+
+  // Build bidirectional edge list
+  const edges=[];
+  for(const seg of allSegs){
+    const ai=addVert(seg.a), bi=addVert(seg.b);
+    if(ai===bi) continue;
+    edges.push({a:ai,b:bi,type:seg.type});
+    edges.push({a:bi,b:ai,type:seg.type});
+  }
+
+  return {verts,edges};
+}
+
+function findFaces(graph){
+  // ─── DCEL half-edge face traversal ────────────────────────────────────
+  // At each vertex, pick the next half-edge using the "most CCW turn" rule
+  // (= smallest positive angular delta from the incoming direction).
+  // This correctly partitions a planar straight-line graph into faces.
+  //
+  // Critical fix vs previous version:
+  //   Half-edges are marked visited DURING traversal, not before the loop.
+  //   Previously the start edge was pre-marked, causing every face to
+  //   terminate immediately on the first step.
+  //
+  // Outer face removal: face with largest absolute area is the exterior.
+  // ──────────────────────────────────────────────────────────────────────
+
+  const {verts,edges}=graph;
+  const nV=verts.length;
+
+  // Build per-vertex adjacency list sorted by angle
+  const adj=Array.from({length:nV},()=>[]);
+  for(const e of edges){
+    const dx=verts[e.b].x-verts[e.a].x;
+    const dy=verts[e.b].y-verts[e.a].y;
+    adj[e.a].push({to:e.b,angle:Math.atan2(dy,dx),type:e.type});
+  }
+  for(let i=0;i<nV;i++) adj[i].sort((a,b)=>a.angle-b.angle);
+
+  // Fast edge-type lookup
+  const edgeTypeMap=new Map();
+  for(const e of edges) edgeTypeMap.set(`${e.a}-${e.b}`,e.type);
+
+  // Next half-edge at vertex 'to_v', arriving from 'from_v':
+  // pick outgoing edge with smallest positive angular delta from incoming direction
+  function nextHalfEdge(from_v,to_v){
+    const inAngle=Math.atan2(
+      verts[from_v].y-verts[to_v].y,
+      verts[from_v].x-verts[to_v].x
+    );
+    const nbrs=adj[to_v];
+    let best=null, bestDelta=Infinity;
+    for(const nb of nbrs){
+      if(nb.to===from_v) continue; // skip direct reverse
+      let delta=nb.angle-inAngle;
+      while(delta<=0) delta+=2*Math.PI;
+      if(delta<bestDelta){bestDelta=delta;best=nb;}
+    }
+    if(!best){
+      // dead-end: reverse
+      const back=nbrs.find(nb=>nb.to===from_v);
+      return back||null;
+    }
+    return best;
+  }
+
+  // Trace all faces — mark half-edges visited DURING traversal
+  const visited=new Set();
+  const faces=[];
+
+  for(const startEdge of edges){
+    const sk=`${startEdge.a}-${startEdge.b}`;
+    if(visited.has(sk)) continue;
+
+    const faceVerts=[];
+    let a=startEdge.a, b=startEdge.b;
+
+    for(let step=0;step<nV*3+10;step++){
+      const key=`${a}-${b}`;
+      if(visited.has(key)) break;   // closed loop or used half-edge
+      visited.add(key);
+      faceVerts.push(a);
+      const ne=nextHalfEdge(a,b);
+      if(!ne) break;
+      a=b; b=ne.to;
+      if(a===startEdge.a&&b===startEdge.b) break; // full loop
+    }
+
+    if(faceVerts.length<3) continue;
+
+    // Compute signed area (absolute value for outer-face detection)
+    const poly=faceVerts.map(i=>verts[i]);
+    const n=poly.length;
+    const sa=poly.reduce((s,v,i)=>{
+      const j=(i+1)%n;
+      return s+v.x*poly[j].y-poly[j].x*v.y;
+    },0);
+    const area=Math.abs(sa);
+
+    if(area>100){
+      const edgeTypes=faceVerts.map((_,i)=>({
+        type: edgeTypeMap.get(`${faceVerts[i]}-${faceVerts[(i+1)%faceVerts.length]}`)||'unknown'
+      }));
+      faces.push({vertices:poly,edges:edgeTypes,_area:area});
+    }
+  }
+
+  // Remove outer face (largest area = exterior boundary)
+  if(faces.length>1){
+    let maxIdx=0,maxA=0;
+    for(let i=0;i<faces.length;i++) if(faces[i]._area>maxA){maxA=faces[i]._area;maxIdx=i;}
+    faces.splice(maxIdx,1);
+  }
+
+  return faces;
+}
+
+// ====================================================
+// MAIN DRAW
+// ====================================================
+function draw(){
+  const W=canvas.width,H=canvas.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#0c0e14';
+  ctx.fillRect(0,0,W,H);
+
+  drawGrid(W,H);
+
+  // Eave outline fill
+  if(S.eaveOutline.length>=3){
+    ctx.beginPath();
+    const [sx0,sy0]=toSc(S.eaveOutline[0].x,S.eaveOutline[0].y);
+    ctx.moveTo(sx0,sy0);
+    for(let i=1;i<S.eaveOutline.length;i++){
+      const [sx,sy]=toSc(S.eaveOutline[i].x,S.eaveOutline[i].y);
+      ctx.lineTo(sx,sy);
+    }
+    ctx.closePath();
+    ctx.fillStyle='rgba(75,141,248,0.04)';
+    ctx.fill();
+  }
+
+  // Draw detected faces
+  for(const f of S.faces){
+    drawFace(f, f.id===S.selectedFaceId);
+  }
+
+  // Draw footprint
+  if(S.footprint.length>=2){
+    drawPolyline(S.footprint, true, '#f0a500', 1.5, [4,3], 0.08);
+  }
+
+  // Draw eave outline
+  if(S.eaveOutline.length>=2){
+    drawPolylineEdges(S.eaveOutline, 'eave');
+  }
+
+  // Draw eave edit handles
+  if(S.editingEave&&S.eaveOutline.length>=2){
+    const n=S.eaveOutline.length;
+    // Highlight hover edge
+    if(S.hoverEaveEdge!==null){
+      const j=(S.hoverEaveEdge+1)%n;
+      const [ax,ay]=toSc(S.eaveOutline[S.hoverEaveEdge].x,S.eaveOutline[S.hoverEaveEdge].y);
+      const [bx,by]=toSc(S.eaveOutline[j].x,S.eaveOutline[j].y);
+      ctx.strokeStyle='rgba(167,139,250,0.8)';ctx.lineWidth=3;ctx.setLineDash([]);
+      ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(bx,by);ctx.stroke();
+      // + icon at midpoint
+      const mx2=(ax+bx)/2,my2=(ay+by)/2;
+      ctx.fillStyle='#a78bfa';ctx.font='bold 14px sans-serif';ctx.textAlign='center';
+      ctx.fillText('+',mx2,my2+5);
+    }
+    // Vertex handles
+    for(let i=0;i<n;i++){
+      const [px,py]=toSc(S.eaveOutline[i].x,S.eaveOutline[i].y);
+      const isHov=i===S.hoverEaveVert;
+      const isDrag=i===S.dragEaveVert;
+      ctx.beginPath();ctx.arc(px,py,isDrag?8:isHov?7:5,0,Math.PI*2);
+      ctx.fillStyle=isDrag?'#f0a500':isHov?'#a78bfa':'#4b8df8';ctx.fill();
+      ctx.strokeStyle='#0c0e14';ctx.lineWidth=1.5;ctx.stroke();
+      if(isHov&&!isDrag){
+        ctx.font='9px IBM Plex Mono';ctx.textAlign='center';
+        ctx.fillStyle='rgba(12,14,20,0.85)';ctx.fillRect(px-24,py-19,48,13);
+        ctx.fillStyle='#a78bfa';
+        const mm=S.eaveOutline[i];
+        ctx.fillText(`${(mm.x/1000).toFixed(2)},${(mm.y/1000).toFixed(2)}`,px,py-9);
+      }
+    }
+    canvas.style.cursor=S.dragEaveVert!==null?'grabbing':
+      S.hoverEaveVert!==null?'grab':
+      S.hoverEaveEdge!==null?'crosshair':'default';
+  }
+
+  // Draw ridge/hip/valley lines
+  for(let ri=0;ri<S.ridgeLines.length;ri++){
+    const l=S.ridgeLines[ri];
+    const [ax,ay]=toSc(l.a.x,l.a.y);
+    const [bx,by]=toSc(l.b.x,l.b.y);
+    const col=EDGE_COL[l.type]||'#fff';
+    const isHov=(ri===S.hoverRidgeLine);
+    // Hover glow
+    if(isHov){
+      ctx.strokeStyle='rgba(255,255,255,0.25)';ctx.lineWidth=10;ctx.setLineDash([]);
+      ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(bx,by);ctx.stroke();
+    }
+    ctx.strokeStyle=isHov?'#fff':col;
+    ctx.lineWidth=(EDGE_SW[l.type]||2)+(isHov?1.5:0);
+    ctx.setLineDash(l.type==='hip'?[6,3]:[]);
+    ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(bx,by);ctx.stroke();
+    ctx.setLineDash([]);
+    // Label
+    const mx=(ax+bx)/2,my=(ay+by)/2;
+    ctx.font='bold 9px Noto Sans JP';
+    ctx.textAlign='center';
+    if(isHov){
+      // Show cycle hint on hover
+      const userTypes=['ridge','hip','valley','keraba'];
+      const cur=userTypes.indexOf(l.type);
+      const next=EDGE_LBL[userTypes[(cur+1)%userTypes.length]];
+      ctx.fillStyle='rgba(12,14,20,0.9)';ctx.fillRect(mx-28,my-9,56,16);
+      ctx.fillStyle='#fff';ctx.fillText(`${EDGE_LBL[l.type]}→${next}`,mx,my+3);
+    } else {
+      ctx.fillStyle='rgba(12,14,20,0.75)';ctx.fillRect(mx-14,my-8,28,14);
+      ctx.fillStyle=col;ctx.fillText(EDGE_LBL[l.type],mx,my+3);
+    }
+    // Endpoints
+    for(const which of ['a','b']){
+      const pt=l[which];
+      const [px,py]=toSc(pt.x,pt.y);
+      const isEPHov=S.hoverRidgeEndpt?.idx===ri&&S.hoverRidgeEndpt?.which===which;
+      const isEPDrag=S.dragRidgeEndpt?.idx===ri&&S.dragRidgeEndpt?.which===which;
+      const r2=isEPHov||isEPDrag?7:4;
+      if(isEPHov||isEPDrag){
+        ctx.beginPath();ctx.arc(px,py,r2+3,0,Math.PI*2);
+        ctx.strokeStyle='rgba(255,255,255,0.4)';ctx.lineWidth=2;ctx.stroke();
+      }
+      ctx.beginPath();ctx.arc(px,py,r2,0,Math.PI*2);
+      ctx.fillStyle=isEPDrag?'#f0a500':isEPHov?'#fff':isHov?'#fff':col;ctx.fill();
+      ctx.strokeStyle='#0c0e14';ctx.lineWidth=1.5;ctx.stroke();
+    }
+  }
+
+  // Drawing in progress
+  if(S.step===1 && S.drawPts.length>0) drawInProgress1();
+  if(S.step===3 && S.drawLine) drawInProgress3();
+
+  // Snap cursor — color + shape shows snap type
+  {
+    const [sx,sy]=toSc(S.mouseSnap.x,S.mouseSnap.y);
+    const sType=S.mouseSnap.snapType||'';
+    const sCol=sType==='vertex'?'#3ecf8e':sType==='grid'?'#4b8df8':sType==='edge'?'#a78bfa':'rgba(240,165,0,0.7)';
+    if(S.mouseSnap.snap){
+      // Glow ring
+      ctx.beginPath();ctx.arc(sx,sy,9,0,Math.PI*2);
+      ctx.strokeStyle=sCol+'55';ctx.lineWidth=2;ctx.stroke();
+      // Crosshair lines
+      ctx.strokeStyle=sCol;ctx.lineWidth=1.5;ctx.setLineDash([]);
+      ctx.beginPath();ctx.moveTo(sx-12,sy);ctx.lineTo(sx+12,sy);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(sx,sy-12);ctx.lineTo(sx,sy+12);ctx.stroke();
+      // Center dot
+      ctx.beginPath();ctx.arc(sx,sy,3,0,Math.PI*2);
+      ctx.fillStyle=sCol;ctx.fill();
+      // Coordinate tooltip
+      const xm=(S.mouseSnap.x/1000).toFixed(3), ym=(S.mouseSnap.y/1000).toFixed(3);
+      const lbl=`${xm}, ${ym}`;
+      ctx.font='bold 10px IBM Plex Mono';ctx.textAlign='left';
+      const tw=ctx.measureText(lbl).width;
+      ctx.fillStyle='rgba(12,14,20,0.88)';ctx.fillRect(sx+16,sy-11,tw+10,17);
+      ctx.strokeStyle=sCol+'66';ctx.lineWidth=1;ctx.strokeRect(sx+16,sy-11,tw+10,17);
+      ctx.fillStyle=sCol;ctx.fillText(lbl,sx+21,sy+2);
+      // Snap type badge
+      const badge=sType==='vertex'?'⬡':sType==='grid'?'#':sType==='edge'?'∥':'';
+      if(badge){
+        ctx.font='bold 9px sans-serif';ctx.textAlign='center';
+        ctx.fillStyle='rgba(12,14,20,0.85)';ctx.fillRect(sx+5,sy-18,12,12);
+        ctx.fillStyle=sCol;ctx.fillText(badge,sx+11,sy-9);
+      }
+    } else {
+      ctx.beginPath();ctx.arc(sx,sy,3,0,Math.PI*2);
+      ctx.fillStyle='rgba(240,165,0,0.45)';ctx.fill();
+      ctx.beginPath();ctx.arc(sx,sy,6,0,Math.PI*2);
+      ctx.strokeStyle='rgba(240,165,0,0.2)';ctx.lineWidth=1;ctx.stroke();
+    }
+  }
+
+  // Axis labels
+  drawAxisLabels(W,H);
+}
+
+function drawPolyline(verts, closed, col, lw, dash=[], alpha=0){
+  if(verts.length<2) return;
+  const pts=verts.map(v=>toSc(v.x,v.y));
+  if(alpha>0){
+    ctx.beginPath();
+    ctx.moveTo(pts[0][0],pts[0][1]);
+    for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i][0],pts[i][1]);
+    if(closed) ctx.closePath();
+    ctx.fillStyle=col+Math.round(alpha*255).toString(16).padStart(2,'0');
+    ctx.fill();
+  }
+  ctx.strokeStyle=col; ctx.lineWidth=lw; ctx.setLineDash(dash);
+  ctx.beginPath();
+  ctx.moveTo(pts[0][0],pts[0][1]);
+  for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i][0],pts[i][1]);
+  if(closed) ctx.closePath();
+  ctx.stroke();
+  ctx.setLineDash([]);
+}
+
+function drawPolylineEdges(verts, defaultType){
+  const n=verts.length;
+  for(let i=0;i<n;i++){
+    const j=(i+1)%n;
+    const type=defaultType||'eave';
+    const [ax,ay]=toSc(verts[i].x,verts[i].y);
+    const [bx,by]=toSc(verts[j].x,verts[j].y);
+    ctx.strokeStyle=EDGE_COL[type];
+    ctx.lineWidth=EDGE_SW[type];
+    ctx.setLineDash([]);
+    ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(bx,by);ctx.stroke();
+    // Vertex dots
+    ctx.beginPath();ctx.arc(ax,ay,3,0,Math.PI*2);
+    ctx.fillStyle=EDGE_COL[type];ctx.fill();
+  }
+}
+
+function drawFace(face, selected){
+  const n=face.vertices.length;
+  if(n<3) return;
+  const pts=face.vertices.map(v=>toSc(v.x,v.y));
+  const alpha=selected?0.22:0.13;
+  ctx.beginPath();
+  ctx.moveTo(pts[0][0],pts[0][1]);
+  for(let i=1;i<n;i++) ctx.lineTo(pts[i][0],pts[i][1]);
+  ctx.closePath();
+  ctx.fillStyle=face.color+Math.round(alpha*255).toString(16).padStart(2,'0');
+  ctx.fill();
+  // Edges
+  for(let i=0;i<n;i++){
+    const j=(i+1)%n;
+    const type=face.edges[i]?.type||'unknown';
+    const isHov=S.hoverEdge&&S.hoverEdge.faceId===face.id&&S.hoverEdge.idx===i;
+    ctx.strokeStyle=isHov?'#fff':EDGE_COL[type];
+    ctx.lineWidth=isHov?3.5:EDGE_SW[type];
+    ctx.setLineDash(type==='hip'?[6,3]:[]);
+    ctx.beginPath();ctx.moveTo(pts[i][0],pts[i][1]);ctx.lineTo(pts[j][0],pts[j][1]);ctx.stroke();
+    ctx.setLineDash([]);
+    // Edge label when selected
+    if(selected&&type!=='unknown'){
+      const mx=(pts[i][0]+pts[j][0])/2,my=(pts[i][1]+pts[j][1])/2;
+      ctx.font='bold 9px Noto Sans JP';
+      ctx.textAlign='center';
+      ctx.fillStyle='rgba(12,14,20,0.8)';
+      ctx.fillRect(mx-14,my-8,28,14);
+      ctx.fillStyle=EDGE_COL[type];
+      ctx.fillText(EDGE_LBL[type],mx,my+3);
+    }
+  }
+  // Face label
+  if(sc(1000)>10){
+    const cx=pts.reduce((s,p)=>s+p[0],0)/n;
+    const cy=pts.reduce((s,p)=>s+p[1],0)/n;
+    ctx.font='bold 11px Noto Sans JP';
+    ctx.textAlign='center';
+    ctx.fillStyle=face.color;
+    ctx.fillText(face.name,cx,cy-2);
+    const area=(polyArea(face.vertices)/1e6).toFixed(2);
+    ctx.font='9px IBM Plex Mono';
+    ctx.fillStyle=face.color+'bb';
+    ctx.fillText(area+'m²',cx,cy+13);
+    ctx.fillStyle='#7a85a8';
+    ctx.fillText(face.pitch+'/10',cx,cy+24);
+  }
+  // Vertices when selected
+  if(selected){
+    for(const [px,py] of pts){
+      ctx.beginPath();ctx.arc(px,py,4,0,Math.PI*2);
+      ctx.fillStyle='#fde68a';ctx.fill();
+      ctx.strokeStyle='#0c0e14';ctx.lineWidth=1;ctx.stroke();
+    }
+  }
+}
+
+function drawInProgress1(){
+  const pts=S.drawPts.map(v=>toSc(v.x,v.y));
+  const cur=toSc(S.mouseSnap.x,S.mouseSnap.y);
+  // Fill preview
+  ctx.beginPath();
+  ctx.moveTo(pts[0][0],pts[0][1]);
+  for(const p of pts) ctx.lineTo(p[0],p[1]);
+  ctx.lineTo(cur[0],cur[1]);
+  ctx.closePath();
+  ctx.fillStyle='rgba(240,165,0,0.06)';ctx.fill();
+  // Outline
+  ctx.strokeStyle='#f0a500';ctx.lineWidth=1.5;ctx.setLineDash([5,4]);
+  ctx.beginPath();ctx.moveTo(pts[0][0],pts[0][1]);
+  for(const p of pts) ctx.lineTo(p[0],p[1]);
+  ctx.lineTo(cur[0],cur[1]);
+  ctx.stroke();ctx.setLineDash([]);
+  // Vertices
+  for(const [px,py] of pts){
+    ctx.beginPath();ctx.arc(px,py,4,0,Math.PI*2);
+    ctx.fillStyle='#f0a500';ctx.fill();
+  }
+  // ── Distance label for current segment ───────────────────────────────
+  if(pts.length>0){
+    const last=S.drawPts[S.drawPts.length-1];
+    const lenMm=Math.round(Math.hypot(S.mouseSnap.x-last.x, S.mouseSnap.y-last.y));
+    if(lenMm>50){
+      const mx=(pts[pts.length-1][0]+cur[0])/2;
+      const my=(pts[pts.length-1][1]+cur[1])/2;
+      const label=lenMm>=1000?(lenMm/1000).toFixed(3)+'m':lenMm+'mm';
+      ctx.font='bold 11px IBM Plex Mono';
+      ctx.textAlign='center';
+      const tw=ctx.measureText(label).width;
+      ctx.fillStyle='rgba(12,14,20,0.85)';
+      ctx.fillRect(mx-tw/2-5,my-10,tw+10,16);
+      ctx.fillStyle='#f0a500';
+      ctx.fillText(label,mx,my+2);
+    }
+    // Total length so far (shown near cursor)
+    if(S.drawPts.length>=2){
+      let total=0;
+      for(let i=1;i<S.drawPts.length;i++)
+        total+=Math.hypot(S.drawPts[i].x-S.drawPts[i-1].x,S.drawPts[i].y-S.drawPts[i-1].y);
+      total+=lenMm;
+      const tlabel='累計 '+(total/1000).toFixed(2)+'m';
+      ctx.font='9px IBM Plex Mono';
+      ctx.textAlign='left';
+      ctx.fillStyle='rgba(12,14,20,0.7)';
+      const tw2=ctx.measureText(tlabel).width;
+      ctx.fillRect(cur[0]+10,cur[1]-16,tw2+8,14);
+      ctx.fillStyle='#aab4d4';
+      ctx.fillText(tlabel,cur[0]+14,cur[1]-5);
+    }
+  }
+  // Close ring
+  if(pts.length>=3){
+    const d=Math.hypot(cur[0]-pts[0][0],cur[1]-pts[0][1]);
+    if(d<16){
+      ctx.beginPath();ctx.arc(pts[0][0],pts[0][1],10,0,Math.PI*2);
+      ctx.strokeStyle='#3ecf8e';ctx.lineWidth=2;ctx.stroke();
+    }
+  }
+  ctx.beginPath();ctx.arc(pts[0][0],pts[0][1],6,0,Math.PI*2);
+  ctx.strokeStyle='#3ecf8e';ctx.lineWidth=1.5;ctx.stroke();
+}
+
+function drawInProgress3(){
+  const a=S.drawLine.a;
+  const [ax,ay]=toSc(a.x,a.y);
+  const [bx,by]=toSc(S.mouseSnap.x,S.mouseSnap.y);
+  const col=EDGE_COL[S.lineType]||'#fff';
+  ctx.strokeStyle=col;ctx.lineWidth=2;ctx.setLineDash([6,3]);
+  ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(bx,by);ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.beginPath();ctx.arc(ax,ay,5,0,Math.PI*2);
+  ctx.fillStyle=col;ctx.fill();
+  // Length hint
+  const lenMm=Math.round(Math.hypot(S.mouseSnap.x-a.x,S.mouseSnap.y-a.y));
+  if(lenMm>100){
+    const mx=(ax+bx)/2,my=(ay+by)/2;
+    ctx.font='9px IBM Plex Mono';ctx.textAlign='center';
+    ctx.fillStyle='rgba(12,14,20,0.8)';ctx.fillRect(mx-22,my-9,44,13);
+    ctx.fillStyle=col;ctx.fillText((lenMm/1000).toFixed(2)+'m',mx,my+2);
+  }
+}
+
+function drawGrid(W,H){
+  const minPx=sc(S.gridMm);
+  const majPx=minPx*2;
+  if(minPx<3) return;
+  ctx.strokeStyle='#161d30';ctx.lineWidth=0.5;
+  const x0m=((S.ox%minPx)+minPx)%minPx,y0m=((S.oy%minPx)+minPx)%minPx;
+  for(let x=x0m;x<W;x+=minPx){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+  for(let y=y0m;y<H;y+=minPx){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+  if(majPx>6){
+    ctx.strokeStyle='#1f2b44';ctx.lineWidth=1;
+    const x0M=((S.ox%majPx)+majPx)%majPx,y0M=((S.oy%majPx)+majPx)%majPx;
+    for(let x=x0M;x<W;x+=majPx){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+    for(let y=y0M;y<H;y+=majPx){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+  }
+  const [ox,oy]=toSc(0,0);
+  ctx.strokeStyle='#2e4060';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(ox-8,oy);ctx.lineTo(ox+8,oy);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(ox,oy-8);ctx.lineTo(ox,oy+8);ctx.stroke();
+}
+
+function drawAxisLabels(W,H){
+  const gPx=sc(S.gridMm*2);
+  if(gPx<30) return;
+  ctx.fillStyle='#2a3550';ctx.font='9px IBM Plex Mono';
+  ctx.textAlign='center';
+  const x0=((S.ox%gPx)+gPx)%gPx;
+  for(let x=x0;x<W;x+=gPx){
+    const mm=Math.round(toMo(x,0)[0]);
+    ctx.fillText((mm/1000).toFixed(1)+'m',x,11);
+  }
+  ctx.textAlign='right';
+  const y0=((S.oy%gPx)+gPx)%gPx;
+  for(let y=y0;y<H;y+=gPx){
+    const mm=Math.round(toMo(0,y)[1]);
+    ctx.fillText((mm/1000).toFixed(1)+'m',30,y+4);
+  }
+}
+
+// ====================================================
+// EVENTS
+// ====================================================
+canvas.addEventListener('mousedown', onDown);
+canvas.addEventListener('mousemove', onMove);
+canvas.addEventListener('mouseup', onUp);
+canvas.addEventListener('dblclick', onDbl);
+canvas.addEventListener('wheel', onWheel,{passive:false});
+canvas.addEventListener('contextmenu', e=>e.preventDefault());
+
+function onDown(e){
+  if(e.button===1){startPan(e);return;}
+  const r=canvas.getBoundingClientRect();
+  const sx=e.clientX-r.left,sy=e.clientY-r.top;
+  if(S.tool==='pan'){startPan(e);return;}
+  // Eave edit mode
+  if(S.editingEave&&S.step>=2){
+    if(e.button===2){
+      // Right-click: delete hovered vertex
+      if(S.hoverEaveVert!==null) eaveEditDeleteVert(S.hoverEaveVert);
+      return;
+    }
+    eaveEditMouseDown(sx,sy); return;
+  }
+
+  const [mx,my]=toMo(sx,sy);
+  const snp=snapPoint(mx,my);
+  S.mouseSnap={x:snp.x,y:snp.y,snap:snp.snap,snapType:snp.snapType||''};
+
+  // Ridge line type cycle — available in step 3 (handled in handleDraw3)
+  // and step 4 (handle here before face select)
+  if(S.step===4 && S.hoverRidgeLine!==null && S.dragRidgeEndpt===null){
+    saveHistory();
+    const l=S.ridgeLines[S.hoverRidgeLine];
+    const userTypes=['ridge','hip','valley','keraba'];
+    const cur=userTypes.indexOf(l.type);
+    l.type=userTypes[(cur+1)%userTypes.length];
+    draw();
+    showHint(`ライン種別を「${EDGE_LBL[l.type]}」に変更しました`,1500);
+    return;
+  }
+
+  if(S.tool==='select'){
+    handleSelectClick(sx,sy);
+    return;
+  }
+
+  // Ridge endpoint drag start (step 3 or 4)
+  if(S.hoverRidgeEndpt!==null && (S.step===3||S.step===4)){
+    saveHistory();
+    S.dragRidgeEndpt={...S.hoverRidgeEndpt};
+    return;
+  }
+
+  // Draw tools
+  if(S.step===1) handleDraw1(snp);
+  else if(S.step===3) handleDraw3(snp);
+}
+
+function onMove(e){
+  const r=canvas.getBoundingClientRect();
+  const sx=e.clientX-r.left,sy=e.clientY-r.top;
+  if(S.isPanning){
+    S.ox=S.panOrigin.x+(sx-S.panStart.x);
+    S.oy=S.panOrigin.y+(sy-S.panStart.y);
+    draw();updateZoom();return;
+  }
+  // Drag ridge endpoint
+  if(S.dragRidgeEndpt!==null){
+    const [mx2,my2]=toMo(sx,sy);
+    const snp2=snapPoint(mx2,my2);
+    S.ridgeLines[S.dragRidgeEndpt.idx][S.dragRidgeEndpt.which]={x:snp2.x,y:snp2.y};
+    draw();return;
+  }
+  const [mx,my]=toMo(sx,sy);
+  const snp=snapPoint(mx,my);
+  S.mouseSnap={x:snp.x,y:snp.y,snap:snp.snap};
+  document.getElementById('posLbl').textContent=
+    `X: ${(snp.x/1000).toFixed(2)}m  Y: ${(snp.y/1000).toFixed(2)}m`;
+  // Eave edit mode hover
+  if(S.editingEave&&S.step>=2){eaveEditMouseMove(sx,sy);return;}
+
+  // Ridge line / endpoint hover detection (step 3 and 4)
+  if((S.step===3&&!S.drawLine) || S.step===4){
+    const ENDPT_THR=10; // px — endpoint grab radius
+    let hovRL=null, hovEP=null;
+    for(let i=0;i<S.ridgeLines.length;i++){
+      const l=S.ridgeLines[i];
+      const [ax,ay]=toSc(l.a.x,l.a.y);
+      const [bx,by]=toSc(l.b.x,l.b.y);
+      // Check endpoints first (higher priority)
+      if(Math.hypot(sx-ax,sy-ay)<ENDPT_THR){hovEP={idx:i,which:'a'};break;}
+      if(Math.hypot(sx-bx,sy-by)<ENDPT_THR){hovEP={idx:i,which:'b'};break;}
+      if(distPtSeg(sx,sy,ax,ay,bx,by)<8){hovRL=i;}
+    }
+    const changed=(hovRL!==S.hoverRidgeLine||JSON.stringify(hovEP)!==JSON.stringify(S.hoverRidgeEndpt));
+    S.hoverRidgeLine=hovEP?null:hovRL;
+    S.hoverRidgeEndpt=hovEP;
+    if(changed) draw();
+    canvas.style.cursor=hovEP?'grab':hovRL!==null?'pointer':S.step===3?'crosshair':'default';
+  } else {
+    S.hoverRidgeLine=null; S.hoverRidgeEndpt=null;
+  }
+
+  // Hover edge detection
+  if(S.tool==='select'&&S.selectedFaceId!==null){
+    const face=S.faces.find(f=>f.id===S.selectedFaceId);
+    if(face){
+      let hov=null;
+      for(let i=0;i<face.vertices.length;i++){
+        const j=(i+1)%face.vertices.length;
+        const [ax,ay]=toSc(face.vertices[i].x,face.vertices[i].y);
+        const [bx,by]=toSc(face.vertices[j].x,face.vertices[j].y);
+        if(distPtSeg(sx,sy,ax,ay,bx,by)<7){hov={faceId:face.id,idx:i};break;}
+      }
+      S.hoverEdge=hov;
+      canvas.style.cursor=hov?'pointer':'default';
+    }
+  }
+  draw();
+}
+
+function onUp(e){
+  if(S.editingEave) eaveEditMouseUp();
+  if(S.dragRidgeEndpt!==null){
+    S.dragRidgeEndpt=null;
+    draw();
+  }
+  if(S.isPanning){
+    S.isPanning=false;
+    canvas.style.cursor=S.tool==='pan'?'grab':'crosshair';
+  }
+}
+
+function onDbl(e){
+  if(S.step===1&&S.drawPts.length>=3) closeFootprint();
+}
+
+function onWheel(e){
+  e.preventDefault();
+  const r=canvas.getBoundingClientRect();
+  const sx=e.clientX-r.left,sy=e.clientY-r.top;
+  const f=e.deltaY<0?1.12:1/1.12;
+  const old=S.zoom;
+  S.zoom=Math.max(0.08,Math.min(12,S.zoom*f));
+  S.ox=sx-(sx-S.ox)*S.zoom/old;
+  S.oy=sy-(sy-S.oy)*S.zoom/old;
+  draw();updateZoom();
+}
+
+function startPan(e){
+  S.isPanning=true;
+  const r=canvas.getBoundingClientRect();
+  S.panStart={x:e.clientX-r.left,y:e.clientY-r.top};
+  S.panOrigin={x:S.ox,y:S.oy};
+  canvas.style.cursor='grabbing';
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT') return;
+  if(e.key==='Escape'){
+    S.drawPts=[];S.drawLine=null;S.selectedFaceId=null;
+    document.getElementById('propPanel').style.display='none';
+    updateFaceList();draw();
+  }
+  if(e.key==='Backspace'&&S.step===1){S.drawPts.pop();draw();e.preventDefault();}
+  if(e.key==='Delete'){
+    if(S.editingEave&&S.hoverEaveVert!==null) eaveEditDeleteVert(S.hoverEaveVert);
+    else if(S.selectedFaceId!==null) deleteFace(S.selectedFaceId);
+  }
+  if((e.key==='z'||e.key==='Z')&&(e.ctrlKey||e.metaKey)){e.preventDefault();undo();}
+  if(e.key==='p') setTool('pan');
+  if(e.key==='s') setTool('select');
+  if(e.key==='d') {if(S.step===1||S.step===3) setTool('draw');}
+});
+
+// ====================================================
+// STEP 1: FOOTPRINT
+// ====================================================
+function handleDraw1(snp){
+  if(S.footprint.length>0){
+    // Close if near start
+    if(S.drawPts.length>=3){
+      const d=Math.hypot(snp.x-S.drawPts[0].x,snp.y-S.drawPts[0].y);
+      if(d<ms(16)){closeFootprint();return;}
+    }
+  }
+  // Skip duplicate point (dblclick fires onDown twice)
+  if(S.drawPts.length>0){
+    const last=S.drawPts[S.drawPts.length-1];
+    if(Math.hypot(snp.x-last.x,snp.y-last.y)<0.5) return;
+  }
+  saveHistory();
+  S.drawPts.push({x:snp.x,y:snp.y});
+  draw();
+}
+
+function closeFootprint(){
+  if(S.drawPts.length<3) return;
+  saveHistory();
+  // Remove consecutive duplicate vertices (can happen from dblclick)
+  const deduped=[];
+  for(let i=0;i<S.drawPts.length;i++){
+    const nxt=S.drawPts[(i+1)%S.drawPts.length];
+    if(Math.hypot(S.drawPts[i].x-nxt.x,S.drawPts[i].y-nxt.y)>0.5) deduped.push(S.drawPts[i]);
+  }
+  if(deduped.length<3){alert('頂点が少なすぎます（3点以上必要）');return;}
+  S.footprint=deduped;
+  S.drawPts=[];
+  // Update sidebar
+  const area=(polyArea(S.footprint)/1e6).toFixed(2);
+  document.getElementById('fpStatus').style.display='none';
+  document.getElementById('fpInfo').style.display='block';
+  document.getElementById('fpStats').textContent=
+    `頂点数: ${S.footprint.length}  投影面積: ${area} m²`;
+  document.getElementById('st1').classList.add('done');
+  draw();
+  showHint('柱芯が確定しました。軒の出を設定してください',2500);
+}
+
+// ====================================================
+// STEP 2: EAVE OFFSET
+// ====================================================
+function applyEaveOffset(){
+  if(S.footprint.length<3){alert('先に柱芯を描いてください');return;}
+  const off=+document.getElementById('eaveOffset').value||455;
+  saveHistory();
+  S.eaveOutline=offsetPolygon(S.footprint,off);
+  document.getElementById('st2').classList.add('done');
+  document.getElementById('eaveEditSection').style.display='';
+  goStep(3);
+  draw();
+  showHint('屋根アウトラインを生成しました。棟・隅棟ラインを引いてください',2500);
+}
+
+// ====================================================
+// STEP 3: RIDGE / HIP LINES
+// ====================================================
+function handleDraw3(snp){
+  // If hovering over an existing ridge line (not mid-draw), cycle its type on click
+  if(!S.drawLine && S.hoverRidgeLine!==null){
+    saveHistory();
+    const l=S.ridgeLines[S.hoverRidgeLine];
+    const ci=EDGE_CYCLE.indexOf(l.type);
+    // Skip 'eave' and 'unknown' when cycling from user lines
+    const userTypes=['ridge','hip','valley','keraba'];
+    const cur=userTypes.indexOf(l.type);
+    l.type=userTypes[(cur+1)%userTypes.length];
+    draw();
+    showHint(`ライン種別を「${EDGE_LBL[l.type]}」に変更しました`,1500);
+    return;
+  }
+  if(!S.drawLine){
+    S.drawLine={a:{x:snp.x,y:snp.y}};
+    showHint('終点をクリックしてください（Escでキャンセル）',2000);
+  } else {
+    const a=S.drawLine.a,b={x:snp.x,y:snp.y};
+    const len=Math.hypot(b.x-a.x,b.y-a.y);
+    if(len>10){
+      saveHistory();
+      S.ridgeLines.push({a,b,type:S.lineType});
+    }
+    S.drawLine=null;
+    draw();
+    showHint(`${EDGE_LBL[S.lineType]}ラインを追加しました`,1500);
+  }
+}
+
+function selectLineType(t){
+  S.lineType=t;
+  document.querySelectorAll('.lt-btn').forEach(b=>{
+    b.classList.toggle('sel-lt',b.dataset.t===t);
+  });
+}
+
+function deleteLastLine(){
+  if(S.ridgeLines.length>0){S.ridgeLines.pop();draw();}
+}
+
+// ====================================================
+// STEP 4: FACE DETECTION
+// ====================================================
+function detectFaces(){
+  if(S.eaveOutline.length<3){
+    alert('先に屋根アウトラインを生成してください（ステップ2）');return;
+  }
+  const graph=buildGraph(S.eaveOutline,S.ridgeLines);
+  const rawFaces=findFaces(graph);
+
+  if(rawFaces.length===0){
+    alert('面を検出できませんでした。\n棟・隅棟ラインが屋根アウトラインに接続されているか確認してください。');
+    return;
+  }
+
+  saveHistory();
+  S.faces=rawFaces.map((f,i)=>({
+    id:i+1,
+    name:`面${i+1}`,
+    pitch:S.defaultPitch,
+    color:PALETTE[i%PALETTE.length],
+    vertices:f.vertices,
+    edges:f.edges,
+  }));
+  S.colorIdx=S.faces.length;
+
+  document.getElementById('st4').classList.add('done');
+  goStep(4);
+  updateFaceList();
+  updateStats();
+  draw();
+  showHint(`${S.faces.length}面を検出しました`,2000);
+}
+
+// ====================================================
+// SELECT & FACE OPERATIONS
+// ====================================================
+function handleSelectClick(sx,sy){
+  // Check edge click on selected face
+  if(S.selectedFaceId!==null){
+    const face=S.faces.find(f=>f.id===S.selectedFaceId);
+    if(face){
+      for(let i=0;i<face.vertices.length;i++){
+        const j=(i+1)%face.vertices.length;
+        const [ax,ay]=toSc(face.vertices[i].x,face.vertices[i].y);
+        const [bx,by]=toSc(face.vertices[j].x,face.vertices[j].y);
+        if(distPtSeg(sx,sy,ax,ay,bx,by)<7){
+          cycleEdgeType(face,i);draw();return;
+        }
+      }
+    }
+  }
+  // Select face
+  const [mx,my]=toMo(sx,sy);
+  let found=null;
+  for(let i=S.faces.length-1;i>=0;i--){
+    if(ptInPoly(mx,my,S.faces[i].vertices)){found=S.faces[i].id;break;}
+  }
+  S.selectedFaceId=found;
+  updatePropPanel();
+  updateFaceList();
+  draw();
+}
+
+function cycleEdgeType(face,idx){
+  const cur=face.edges[idx]?.type||'unknown';
+  const ci=EDGE_CYCLE.indexOf(cur);
+  face.edges[idx]={type:EDGE_CYCLE[(ci+1)%EDGE_CYCLE.length]};
+  draw();
+}
+
+function deleteFace(id){
+  S.faces=S.faces.filter(f=>f.id!==id);
+  if(S.selectedFaceId===id){S.selectedFaceId=null;document.getElementById('propPanel').style.display='none';}
+  updateFaceList();updateStats();draw();
+}
+
+function updateFaceProp(prop,val){
+  const f=S.faces.find(f=>f.id===S.selectedFaceId);
+  if(!f) return;
+  f[prop]=val;
+  updateFaceList();draw();
+}
+
+function updatePropPanel(){
+  const pp=document.getElementById('propPanel');
+  const f=S.faces.find(f=>f.id===S.selectedFaceId);
+  if(f){
+    pp.style.display='block';
+    document.getElementById('pName').value=f.name;
+    document.getElementById('pPitch').value=f.pitch;
+    document.getElementById('pColor').value=f.color;
+    document.querySelectorAll('#fPitchBtns .pitch-btn').forEach(b=>{
+      b.classList.toggle('sel-pitch', +b.dataset.p===f.pitch);
+    });
+  } else {
+    pp.style.display='none';
+  }
+}
+
+function updateFaceList(){
+  const el=document.getElementById('faceList');
+  if(S.faces.length===0){
+    el.innerHTML='<div class="empty">面が検出されていません</div>';return;
+  }
+  el.innerHTML=S.faces.map(f=>{
+    const area=(polyArea(f.vertices)/1e6).toFixed(2);
+    const r=Math.sqrt(1+(f.pitch/10)**2);
+    const realArea=(polyArea(f.vertices)*r/1e6).toFixed(2);
+    return `<div class="face-item${f.id===S.selectedFaceId?' sel':''}" onclick="selectFaceById(${f.id})">
+      <div class="f-dot" style="background:${f.color}"></div>
+      <div>
+        <div class="f-name">${f.name}</div>
+        <div class="f-info">${area}m² | 実${realArea}m² | ${f.pitch}/10</div>
+      </div>
+      <button class="f-del" onclick="event.stopPropagation();deleteFace(${f.id})">×</button>
+    </div>`;
+  }).join('');
+}
+
+function selectFaceById(id){
+  S.selectedFaceId=id;
+  updatePropPanel();updateFaceList();
+  setTool('select');
+  draw();
+}
+
+function updateStats(){
+  if(S.faces.length===0){
+    document.getElementById('stProj').textContent='—';
+    document.getElementById('stReal').textContent='—';
+    return;
+  }
+  let proj=0,real=0;
+  for(const f of S.faces){
+    const a=polyArea(f.vertices);
+    proj+=a;
+    real+=a*Math.sqrt(1+(f.pitch/10)**2);
+  }
+  document.getElementById('stProj').textContent=(proj/1e6).toFixed(2);
+  document.getElementById('stReal').textContent=(real/1e6).toFixed(2);
+}
+
+// ====================================================
+// WORKFLOW CONTROL
+// ====================================================
+function goStep(n, silent=false){
+  if(n===2&&S.footprint.length<3){showHint('先に柱芯を描いてください',2000);return;}
+  if(n===3&&S.eaveOutline.length<3){showHint('先に軒の出を設定してください',2000);return;}
+  S.step=n;
+  S.drawPts=[];S.drawLine=null;
+  // Tool
+  if(n===1||n===3) setTool('draw');
+  else setTool('select');
+  // Sidebar visibility
+  document.getElementById('sbStep2').style.display=n>=2?'':'none';
+  document.getElementById('sbStep3').style.display=n>=3?'':'none';
+  document.getElementById('sbStep4').style.display=n>=4?'':'none';
+  // Step highlight
+  [1,2,3,4].forEach(i=>{
+    const el=document.getElementById('st'+i);
+    el.classList.toggle('active',i===n);
+    if(!silent) el.classList.toggle('done', i<n);
+  });
+  // Status messages
+  const msgs={
+    1:'柱芯ラインをクリックで描いてください（ダブルクリックor始点付近で閉じる）',
+    2:'軒の出・ケラバ出を入力して「屋根アウトライン生成」を押してください',
+    3:`${EDGE_LBL[S.lineType]}ラインを描いてください（始点→終点でクリック）`,
+    4:'面をクリックで選択、辺をクリックでタイプ変更。勾配を設定してください'
+  };
+  document.getElementById('msgLbl').textContent=msgs[n];
+  draw();
+}
+
+function setTool(t){
+  S.tool=t;
+  ['btnPan','btnSel'].forEach(id=>document.getElementById(id).classList.remove('active'));
+  if(t==='pan') document.getElementById('btnPan').classList.add('active');
+  if(t==='select') document.getElementById('btnSel').classList.add('active');
+  canvas.style.cursor=t==='pan'?'grab':t==='select'?'default':'crosshair';
+}
+
+function setGrid(v){S.gridMm=+v;S.snapMm=+v;draw();}
+function updateZoom(){document.getElementById('zoomLbl').textContent=Math.round(S.zoom*100)+'%';}
+
+let _hintTimer=null;
+function showHint(msg,dur=2000){
+  const el=document.getElementById('hintBox');
+  el.textContent=msg;el.classList.add('on');
+  clearTimeout(_hintTimer);
+  _hintTimer=setTimeout(()=>el.classList.remove('on'),dur);
+}
+
+function setView(v){
+  S.view=v;
+  const panel=document.getElementById('unfoldPanel');
+  panel.classList.toggle('open',v==='unfold');
+  document.getElementById('vtPlan').classList.toggle('on',v==='plan');
+  document.getElementById('vtUnfold').classList.toggle('on',v==='unfold');
+}
+
+// ====================================================
+// EAVE OUTLINE EDITING
+// ====================================================
+function toggleEaveEdit(){
+  if(S.eaveOutline.length<3){showHint('先にアウトラインを生成してください',2000);return;}
+  S.editingEave=!S.editingEave;
+  S.dragEaveVert=null;
+  const btn=document.getElementById('btnEditEave');
+  if(S.editingEave){
+    btn.style.background='var(--amber)';
+    btn.textContent='✓ 編集中（クリックで完了）';
+    setTool('select');
+    showHint('頂点をドラッグ、辺クリックで頂点追加、頂点Delete/右クリックで削除',3500);
+  } else {
+    btn.style.background='var(--purple)';
+    btn.textContent='✎ アウトライン編集モード';
+  }
+  draw();
+}
+
+function eaveEditMouseDown(sx,sy){
+  const n=S.eaveOutline.length;
+  const THR=10; // px
+
+  // Check vertex hit
+  for(let i=0;i<n;i++){
+    const [px,py]=toSc(S.eaveOutline[i].x,S.eaveOutline[i].y);
+    if(Math.hypot(sx-px,sy-py)<THR){
+      saveHistory();
+      S.dragEaveVert=i;
+      return;
+    }
+  }
+
+  // Check edge hit → insert vertex
+  for(let i=0;i<n;i++){
+    const j=(i+1)%n;
+    const [ax,ay]=toSc(S.eaveOutline[i].x,S.eaveOutline[i].y);
+    const [bx,by]=toSc(S.eaveOutline[j].x,S.eaveOutline[j].y);
+    const d=distPtSeg(sx,sy,ax,ay,bx,by);
+    if(d<7){
+      saveHistory();
+      const [mx,my]=toMo(sx,sy);
+      const snp=snapPoint(mx,my);
+      S.eaveOutline.splice(j,0,{x:snp.x,y:snp.y});
+      S.dragEaveVert=j;
+      draw();
+      return;
+    }
+  }
+}
+
+function eaveEditMouseMove(sx,sy){
+  if(S.dragEaveVert!==null){
+    const [mx,my]=toMo(sx,sy);
+    const snp=snapPoint(mx,my);
+    S.eaveOutline[S.dragEaveVert]={x:snp.x,y:snp.y};
+    draw(); return;
+  }
+  const n=S.eaveOutline.length; const THR=10;
+  S.hoverEaveVert=null; S.hoverEaveEdge=null;
+  for(let i=0;i<n;i++){
+    const [px,py]=toSc(S.eaveOutline[i].x,S.eaveOutline[i].y);
+    if(Math.hypot(sx-px,sy-py)<THR){S.hoverEaveVert=i;draw();return;}
+  }
+  for(let i=0;i<n;i++){
+    const j=(i+1)%n;
+    const [ax,ay]=toSc(S.eaveOutline[i].x,S.eaveOutline[i].y);
+    const [bx,by]=toSc(S.eaveOutline[j].x,S.eaveOutline[j].y);
+    if(distPtSeg(sx,sy,ax,ay,bx,by)<7){S.hoverEaveEdge=i;draw();return;}
+  }
+  draw();
+}
+
+function eaveEditMouseUp(){
+  S.dragEaveVert=null;
+}
+
+function eaveEditDeleteVert(idx){
+  if(S.eaveOutline.length<=3){showHint('頂点は最低3つ必要です',1500);return;}
+  saveHistory();
+  S.eaveOutline.splice(idx,1);
+  S.hoverEaveVert=null;
+  draw();
+}
+
+// ====================================================
+// PITCH CONTROL
+// ====================================================
+function setDefaultPitch(val, fromInput=false){
+  S.defaultPitch=val;
+  // Sync custom input
+  if(!fromInput) document.getElementById('pitchCustom').value=val;
+  // Update button highlights
+  document.querySelectorAll('#pitchBtns .pitch-btn').forEach(b=>{
+    b.classList.toggle('sel-pitch', +b.dataset.p===val);
+  });
+}
+
+function setFacePitch(val, fromInput=false){
+  const f=S.faces.find(f=>f.id===S.selectedFaceId);
+  if(!f) return;
+  f.pitch=val;
+  if(!fromInput) document.getElementById('pPitch').value=val;
+  // Update face pitch button highlights
+  document.querySelectorAll('#fPitchBtns .pitch-btn').forEach(b=>{
+    b.classList.toggle('sel-pitch', +b.dataset.p===val);
+  });
+  updateFaceList();
+  // Redraw face pitch label on canvas
+  draw();
+  // Live-update the unfolding if it's visible
+  if(S.view==='unfold') generateUnfolding();
+}
+
+function clearAll(){
+  if(!confirm('すべてクリアしますか？')) return;
+  S.footprint=[];S.eaveOutline=[];S.ridgeLines=[];S.faces=[];
+  S.drawPts=[];S.drawLine=null;S.selectedFaceId=null;S.lastSVG=null;
+  S.editingEave=false;S.hoverEaveVert=null;S.hoverEaveEdge=null;S.dragEaveVert=null;
+  const eb=document.getElementById('btnEditEave');
+  if(eb){eb.style.background='var(--purple)';eb.textContent='✎ アウトライン編集モード';}
+  document.getElementById('eaveEditSection').style.display='none';
+  goStep(1);
+  document.getElementById('fpStatus').style.display='';
+  document.getElementById('fpInfo').style.display='none';
+  [1,2,3,4].forEach(i=>{
+    document.getElementById('st'+i).classList.remove('done','active');
+  });
+  document.getElementById('st1').classList.add('active');
+  document.getElementById('propPanel').style.display='none';
+  updateFaceList();updateStats();draw();
+}
+
+// ====================================================
+// UNFOLDING
+// ====================================================
+function unfoldFace(face){
+  const n=face.vertices.length;
+  if(n<3) return null;
+  // Select the base edge for unfolding:
+  // Among all edges where ALL other vertices lie on one side (d >= -1),
+  // prefer 'eave'-typed edges, then the one giving the deepest interior (largest maxDepth).
+  // This correctly handles: split eave edges, keraba edges typed as 'eave', non-rectangular faces.
+  let eaveIdx=-1, bestPriority=-Infinity;
+  for(let ei=0;ei<n;ei++){
+    const A=face.vertices[ei], B=face.vertices[(ei+1)%n];
+    const edx=B.x-A.x, edy=B.y-A.y, eLen=Math.hypot(edx,edy);
+    if(eLen<1) continue;
+    const ex=edx/eLen, ey=edy/eLen;
+    let nx=-ey, ny=ex;
+    const ds=face.vertices.map(V=>(V.x-A.x)*nx+(V.y-A.y)*ny);
+    const maxD=Math.max(...ds), minD=Math.min(...ds);
+    if(maxD+minD<0){nx=-nx;ny=-ny;}
+    const ds2=face.vertices.map(V=>(V.x-A.x)*nx+(V.y-A.y)*ny);
+    if(!ds2.every(d=>d>=-1)) continue; // not a valid base (vertices on both sides)
+    const type=face.edges[ei]?.type||'unknown';
+    const isEave=(type==='eave');
+    const maxDepth=Math.max(...ds2);
+    const priority=(isEave?10000:0)+maxDepth;
+    if(priority>bestPriority){bestPriority=priority;eaveIdx=ei;}
+  }
+  if(eaveIdx<0){
+    // Fallback: use the edge with highest midpoint Y (screen bottom = roof front)
+    let maxY=-Infinity;
+    for(let i=0;i<n;i++){
+      const j=(i+1)%n;
+      const my=(face.vertices[i].y+face.vertices[j].y)/2;
+      if(my>maxY){maxY=my;eaveIdx=i;}
+    }
+  }
+  const A=face.vertices[eaveIdx];
+  const B=face.vertices[(eaveIdx+1)%n];
+  const edx=B.x-A.x,edy=B.y-A.y;
+  const eLen=Math.hypot(edx,edy);
+  if(eLen<1) return null;
+  const ex=edx/eLen,ey=edy/eLen;
+  let nx=-ey,ny=ex;
+  const cx=face.vertices.reduce((s,v)=>s+v.x,0)/n;
+  const cy=face.vertices.reduce((s,v)=>s+v.y,0)/n;
+  if((cx-A.x)*nx+(cy-A.y)*ny<0){nx=-nx;ny=-ny;}
+  const ratio=Math.sqrt(1+(face.pitch/10)**2);
+  const unfolded=face.vertices.map(V=>{
+    const dvx=V.x-A.x,dvy=V.y-A.y;
+    const t=dvx*ex+dvy*ey;
+    const d=dvx*nx+dvy*ny;
+    return {x:A.x+t*ex+d*ratio*nx, y:A.y+t*ey+d*ratio*ny};
+  });
+  const actualLens=face.vertices.map((v,i)=>{
+    const j=(i+1)%n;
+    const v1=face.vertices[i],v2=face.vertices[j];
+    const d1x=v1.x-A.x,d1y=v1.y-A.y;
+    const d2x=v2.x-A.x,d2y=v2.y-A.y;
+    const t1=d1x*ex+d1y*ey,t2=d2x*ex+d2y*ey;
+    const p1=d1x*nx+d1y*ny,p2=d2x*nx+d2y*ny;
+    return Math.hypot(t2-t1,(p2-p1)*ratio);
+  });
+  return {verts:unfolded,actualLens,eaveIdx};
+}
+
+function generateUnfolding(){
+  if(S.faces.length===0){alert('面を検出してください（ステップ3→4）');return;}
+
+  const GAP=36,PAD=56;
+  // Smart column count: balanced grid so all faces are visible
+  const N=S.faces.length;
+  const COLS = N<=3 ? N : N<=4 ? 2 : N<=6 ? 3 : N<=8 ? 4 : 4;
+  const unfoldeds=S.faces.map(f=>({f,u:unfoldFace(f)})).filter(x=>x.u);
+
+  if(!unfoldeds.length){alert('展開できる面がありません');return;}
+
+  const rows=Math.ceil(unfoldeds.length/COLS);
+
+  // Auto-scale: target a max SVG height of ~860px so all rows fit on screen.
+  // Compute raw cell dimensions at scale=1, then scale to fit.
+  const rawCellW=Math.max(...unfoldeds.map(x=>{
+    const xs=x.u.verts.map(v=>v.x); return Math.max(...xs)-Math.min(...xs);
+  }));
+  const rawCellH=Math.max(...unfoldeds.map(x=>{
+    const ys=x.u.verts.map(v=>v.y); return Math.max(...ys)-Math.min(...ys);
+  }));
+  // Target max total height: rows * cellH_px + GAP + 50 <= 860
+  // cellH_px = rawCellH * SC + PAD*2 + 80
+  // => SC <= (860 - GAP - 50 - rows*(PAD*2+80)) / (rows * rawCellH)
+  const TARGET_H = 860;
+  const SC_maxH = (TARGET_H - GAP - 50 - rows*(PAD*2+80)) / (rows * rawCellH);
+  // Also cap width per column: 300px max per column
+  const SC_maxW = (300 - PAD*2) / rawCellW;
+  // Use the smaller of the two, capped between 0.025 and 0.09
+  const SVG_SC = Math.max(0.025, Math.min(0.09, SC_maxH, SC_maxW));
+
+  const cellW = rawCellW*SVG_SC + PAD*2;
+  const cellH = rawCellH*SVG_SC + PAD*2 + 80;
+  const totalW = cellW*COLS + GAP;
+  const totalH = cellH*rows + GAP + 50;
+
+  let parts=[];
+  let totProj=0,totReal=0;
+
+  unfoldeds.forEach(({f,u},fi)=>{
+    const col=fi%COLS,row=Math.floor(fi/COLS);
+    const oX=col*cellW+PAD,oY=row*cellH+PAD;
+    const xs=u.verts.map(v=>v.x),ys=u.verts.map(v=>v.y);
+    const minX=Math.min(...xs),minY=Math.min(...ys);
+    const pts=u.verts.map(v=>[(v.x-minX)*SVG_SC+oX,(v.y-minY)*SVG_SC+oY]);
+    const n=pts.length;
+    const pStr=pts.map(p=>p.join(',')).join(' ');
+
+    const proj=polyArea(f.vertices);
+    const real=polyArea(u.verts);
+    totProj+=proj;totReal+=real;
+
+    // Fill
+    parts.push(`<polygon points="${pStr}" fill="${f.color}22" stroke="${f.color}" stroke-width="1.5"/>`);
+
+    // Edges
+    for(let i=0;i<n;i++){
+      const j=(i+1)%n;
+      const type=f.edges[i]?.type||'unknown';
+      const col2=EDGE_COL[type],sw=EDGE_SW[type]*1.4;
+      const dash=type==='hip'?' stroke-dasharray="6,3"':'';
+      parts.push(`<line x1="${pts[i][0]}" y1="${pts[i][1]}" x2="${pts[j][0]}" y2="${pts[j][1]}"
+        stroke="${col2}" stroke-width="${sw}" stroke-linecap="round"${dash}/>`);
+      const mx=(pts[i][0]+pts[j][0])/2,my=(pts[i][1]+pts[j][1])/2;
+      const edx2=pts[j][0]-pts[i][0],edy2=pts[j][1]-pts[i][1];
+      const el2=Math.hypot(edx2,edy2);
+      if(el2>0.1){
+        const enx=-edy2/el2,eny=edx2/el2;
+        const al=u.actualLens[i];
+        const lenStr=Math.round(al)+'mm';
+        // Type label — always on outside (enx*11)
+        if(type!=='unknown'){
+          parts.push(`<text x="${mx+enx*11}" y="${my+eny*11+3}" text-anchor="middle"
+            font-family="Noto Sans JP,sans-serif" font-size="9" fill="${col2}" font-weight="bold">${EDGE_LBL[type]}</text>`);
+        }
+        // Length label — on the edge itself or inside
+        if(al>100&&el2>20){
+          // Place on the line, slightly offset to inside
+          const offX=enx>0?-enx*11:enx*(-9);
+          const offY=eny>0?-eny*11:eny*(-9);
+          parts.push(`<rect x="${mx-offX-22}" y="${my-offY-6}" width="44" height="12" rx="2"
+            fill="rgba(18,21,32,0.75)"/>`)
+          parts.push(`<text x="${mx-offX}" y="${my-offY+4}" text-anchor="middle"
+            font-family="IBM Plex Mono,monospace" font-size="8.5" fill="#aab4d4">${lenStr}</text>`);
+        }
+      }
+    }
+
+    // Vertices
+    for(const [px,py] of pts)
+      parts.push(`<circle cx="${px}" cy="${py}" r="2.5" fill="#fde68a" stroke="#0c0e14" stroke-width="0.8"/>`);
+
+    // Labels
+    const fcx=pts.reduce((s,p)=>s+p[0],0)/n;
+    const fcy=pts.reduce((s,p)=>s+p[1],0)/n;
+    // Compute true eave length = sum of all eave-typed edge segments in THIS face
+    // (eave may be split into multiple segments by ridge T-intersections)
+    // Also detect keraba = eave edges that are NOT the longest eave group
+    const eaveLenTotal=u.actualLens.reduce((s,l,i)=>f.edges[i]?.type==='eave'?s+l:s,0);
+    parts.push(`<text x="${fcx}" y="${fcy-10}" text-anchor="middle"
+      font-family="Noto Sans JP,sans-serif" font-size="12" fill="${f.color}" font-weight="700">${f.name}</text>`);
+    parts.push(`<text x="${fcx}" y="${fcy+5}" text-anchor="middle"
+      font-family="IBM Plex Mono,monospace" font-size="9" fill="${f.color}bb">${(real/1e6).toFixed(3)} m²</text>`);
+    parts.push(`<text x="${fcx}" y="${fcy+17}" text-anchor="middle"
+      font-family="IBM Plex Mono,monospace" font-size="8.5" fill="#7a85a8">勾配 ${f.pitch}/10 (${(Math.atan(f.pitch/10)*180/Math.PI).toFixed(1)}°)</text>`);
+
+    // Dim lines
+    const bx1=oX,bx2=oX+(Math.max(...xs)-minX)*SVG_SC;
+    const by1=oY,by2=oY+(Math.max(...ys)-minY)*SVG_SC;
+    parts.push(svgDimH(bx1,bx2,by2+20,Math.round(Math.max(...xs)-minX)+'mm'));
+    // NOTE: ys are already in UNFOLDED coords (d×ratio applied), so NO extra ratio here
+    parts.push(svgDimV(bx2+18,by1,by2,Math.round(Math.max(...ys)-minY)+'mm (流れ)'));
+
+    // Pitch badge + key dimensions summary
+    parts.push(`<rect x="${bx1}" y="${by2+33}" width="200" height="15" rx="3"
+      fill="rgba(240,165,0,0.08)" stroke="rgba(240,165,0,0.2)" stroke-width="1"/>`);
+    parts.push(`<text x="${bx1+5}" y="${by2+44}" font-family="IBM Plex Mono,monospace"
+      font-size="8.5" fill="#f0a500">勾配 ${f.pitch}/10 | 実長倍率 ${Math.sqrt(1+(f.pitch/10)**2).toFixed(3)}</text>`);
+
+    // Per-type length summary
+    const typeLens={};
+    u.actualLens.forEach((l,i)=>{
+      const t=f.edges[i]?.type||'unknown';
+      if(t==='unknown') return;
+      if(!typeLens[t]) typeLens[t]=[];
+      typeLens[t].push(l);
+    });
+    const summaryParts=[];
+    for(const [t,ls] of Object.entries(typeLens)){
+      const vals=ls.map(l=>l>=1000?(l/1000).toFixed(3)+'m':Math.round(l)+'mm');
+      summaryParts.push(`<tspan fill="${EDGE_COL[t]}" font-weight="bold">${EDGE_LBL[t]}:</tspan> <tspan fill="#aab4d4">${vals.join(' / ')}</tspan>`);
+    }
+    if(summaryParts.length){
+      parts.push(`<text x="${bx1}" y="${by2+63}" font-family="IBM Plex Mono,monospace" font-size="8">${summaryParts.join('  ')}</text>`);
+    }
+  });
+
+  // Legend
+  const legY=rows*cellH+GAP;
+  [['#fde68a','棟'],['#4b8df8','軒先'],['#3ecf8e','ケラバ'],['#fb923c','谷'],['#c4a832','隅棟']].forEach(([c,l],i)=>{
+    const lx=PAD+i*110;
+    parts.push(`<line x1="${lx}" y1="${legY+5}" x2="${lx+22}" y2="${legY+5}"
+      stroke="${c}" stroke-width="2.5" stroke-linecap="round"/>`);
+    parts.push(`<text x="${lx+26}" y="${legY+9}" font-family="Noto Sans JP,sans-serif"
+      font-size="9" fill="${c}">${l}</text>`);
+  });
+  parts.push(`<text x="${PAD+600}" y="${legY+9}" font-family="IBM Plex Mono,monospace"
+    font-size="10" fill="#3ecf8e">実面積: ${(totReal/1e6).toFixed(2)} m²  投影: ${(totProj/1e6).toFixed(2)} m²</text>`);
+
+  const svgStr=`<svg xmlns="http://www.w3.org/2000/svg"
+    width="${Math.ceil(totalW)}" height="${Math.ceil(totalH)}"
+    style="background:#121520;border-radius:10px;">${parts.join('\n')}</svg>`;
+
+  S.lastSVG=svgStr;
+  document.getElementById('ufBody').innerHTML=svgStr;
+  document.getElementById('ufStats').textContent=
+    `${unfoldeds.length}面 | 実面積 ${(totReal/1e6).toFixed(2)}m²`;
+  setView('unfold');
+}
+
+function svgDimH(x1,x2,y,label){
+  const mx=(x1+x2)/2;
+  return `<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="#3d4868" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="${x1}" y1="${y-4}" x2="${x1}" y2="${y+4}" stroke="#3d4868" stroke-width="1"/>
+<line x1="${x2}" y1="${y-4}" x2="${x2}" y2="${y+4}" stroke="#3d4868" stroke-width="1"/>
+<text x="${mx}" y="${y-3}" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="#3d4868">${label}</text>`;
+}
+function svgDimV(x,y1,y2,label){
+  const my=(y1+y2)/2;
+  return `<line x1="${x}" y1="${y1}" x2="${x}" y2="${y2}" stroke="#3d4868" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="${x-4}" y1="${y1}" x2="${x+4}" y2="${y1}" stroke="#3d4868" stroke-width="1"/>
+<line x1="${x-4}" y1="${y2}" x2="${x+4}" y2="${y2}" stroke="#3d4868" stroke-width="1"/>
+<text x="${x+6}" y="${my}" font-family="IBM Plex Mono,monospace" font-size="8.5" fill="#3d4868"
+  transform="rotate(90,${x+6},${my})" dy="0.3em">${label}</text>`;
+}
+
+function exportSVG(){
+  if(!S.lastSVG){alert('先に展開図を生成してください');return;}
+  const blob=new Blob([S.lastSVG],{type:'image/svg+xml'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`roof_custom_${Date.now()}.svg`;
+  a.click();
+}
+
+// ====================================================
+// INIT
+// ====================================================
+resize();
+draw();
+</script>
+
+
+</body></html>
