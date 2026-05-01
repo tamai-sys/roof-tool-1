@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<!-- saved from url=(0057)file:///Users/tamaiosamuiwataru/Downloads/roof-v4_24.html -->
-<html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>屋根展開図ツール Pro</title>
-<link href="./屋根展開図ツール Pro_files/css2" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#0c0e14;--s1:#111420;--s2:#161c2c;--s3:#1c2338;
@@ -215,8 +215,8 @@ header{
   <div class="logo">
     <div class="logo-mark">
       <svg width="18" height="16" viewBox="0 0 18 16" fill="none">
-        <polygon points="9,1 17,15 1,15" fill="none" stroke="var(--amber)" stroke-width="1.5"></polygon>
-        <polygon points="4,15 14,15 12,9 6,9" fill="rgba(75,141,248,.3)" stroke="var(--blue)" stroke-width="1"></polygon>
+        <polygon points="9,1 17,15 1,15" fill="none" stroke="var(--amber)" stroke-width="1.5"/>
+        <polygon points="4,15 14,15 12,9 6,9" fill="rgba(75,141,248,.3)" stroke="var(--blue)" stroke-width="1"/>
       </svg>
     </div>
     <div>
@@ -247,34 +247,36 @@ header{
 
   <div class="hdiv"></div>
   <!-- Pan / select tools -->
-  <button class="btn" id="btnPan" onclick="setTool(&#39;pan&#39;)" title="P">
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>移動
+  <button class="btn" id="btnPan" onclick="setTool('pan')" title="P">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>移動
   </button>
-  <button class="btn active" id="btnSel" onclick="setTool(&#39;select&#39;)" title="S">
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 2l4 9 2-4 4-2L2 2z" stroke="currentColor" stroke-width="1.3" fill="none"></path></svg>選択
+  <button class="btn" id="btnSel" onclick="setTool('select')" title="S">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 2l4 9 2-4 4-2L2 2z" stroke="currentColor" stroke-width="1.3" fill="none"/></svg>選択
   </button>
   <!-- Grid -->
-  <select id="gridSel" onchange="setGrid(this.value)" style="background:var(--s2);border:1.5px solid var(--b1);color:var(--txt2);
+  <select id="gridSel" onchange="setGrid(this.value)"
+    style="background:var(--s2);border:1.5px solid var(--b1);color:var(--txt2);
     font-size:10.5px;padding:4px 7px;border-radius:5px;cursor:pointer;">
-    <option value="455" selected="">455/910mm</option>
+    <option value="455" selected>455/910mm</option>
     <option value="910">910/1820mm</option>
     <option value="1000">1000mm</option>
   </select>
   <div class="hsep"></div>
   <div class="vtabs">
-    <button class="vtab on" id="vtPlan" onclick="setView(&#39;plan&#39;)">平面図</button>
-    <button class="vtab" id="vtUnfold" onclick="setView(&#39;unfold&#39;)">展開図</button>
+    <button class="vtab on" id="vtPlan" onclick="setView('plan')">平面図</button>
+    <button class="vtab" id="vtUnfold" onclick="setView('unfold')">展開図</button>
+    <button class="vtab" id="vtMat" onclick="setView('materials')">部材拾い出し</button>
   </div>
   <button class="btn primary" onclick="generateUnfolding()">
-    <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><polygon points="2,1 10,5.5 2,10" fill="currentColor"></polygon></svg>
+    <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><polygon points="2,1 10,5.5 2,10" fill="currentColor"/></svg>
     展開図を生成
   </button>
   <button class="btn" onclick="exportSVG()">
-    <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M5.5 1v6M3 5l2.5 2.5L8 5M1 9v1a.5.5 0 00.5.5h9A.5.5 0 0011 10V9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"></path></svg>
+    <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M5.5 1v6M3 5l2.5 2.5L8 5M1 9v1a.5.5 0 00.5.5h9A.5.5 0 0011 10V9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
     SVG
   </button>
-  <button class="btn" id="btnUndo" onclick="undo()" disabled="" title="Ctrl+Z" style="border-color:var(--purple);color:var(--purple);">
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6a4 4 0 104 -4H3M3 2L1 4l2 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+  <button class="btn" id="btnUndo" onclick="undo()" disabled title="Ctrl+Z" style="border-color:var(--purple);color:var(--purple);">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6a4 4 0 104 -4H3M3 2L1 4l2 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
     Undo
   </button>
   <button class="btn danger" onclick="clearAll()">クリア</button>
@@ -316,10 +318,13 @@ header{
       <div style="font-size:9px;color:var(--txt3);line-height:1.6;margin-bottom:7px;">
         頂点をドラッグして移動<br>辺をクリックで頂点追加<br>頂点をDeleteキーで削除
       </div>
-      <button class="big-btn" id="btnEditEave" style="background:var(--purple);color:#0c0e14;font-weight:700;margin-bottom:4px;" onclick="toggleEaveEdit()">
+      <button class="big-btn" id="btnEditEave"
+        style="background:var(--purple);color:#0c0e14;font-weight:700;margin-bottom:4px;"
+        onclick="toggleEaveEdit()">
         ✎ アウトライン編集モード
       </button>
-      <button class="btn" style="width:100%;justify-content:center;font-size:10px;" onclick="applyEaveOffset()">↺ オフセットを再適用</button>
+      <button class="btn" style="width:100%;justify-content:center;font-size:10px;"
+        onclick="applyEaveOffset()">↺ オフセットを再適用</button>
     </div>
   </div>
 
@@ -327,10 +332,10 @@ header{
   <div class="sb-sec" id="sbStep3" style="display:none;">
     <div class="sb-lbl">③ 棟・隅棟ライン</div>
     <div class="lt-sel" id="ltSel">
-      <button class="lt-btn sel-lt" data-t="ridge" onclick="selectLineType(&#39;ridge&#39;)" style="border-color:var(--ridge-col);color:var(--ridge-col);">棟</button>
-      <button class="lt-btn" data-t="hip" onclick="selectLineType(&#39;hip&#39;)" style="border-color:var(--hip-col);color:var(--hip-col);">隅棟</button>
-      <button class="lt-btn" data-t="valley" onclick="selectLineType(&#39;valley&#39;)" style="border-color:var(--valley-col);color:var(--valley-col);">谷</button>
-      <button class="lt-btn" data-t="keraba" onclick="selectLineType(&#39;keraba&#39;)" style="border-color:var(--keraba-col);color:var(--keraba-col);">ケラバ</button>
+      <button class="lt-btn sel-lt" data-t="ridge" onclick="selectLineType('ridge')" style="border-color:var(--ridge-col);color:var(--ridge-col);">棟</button>
+      <button class="lt-btn" data-t="hip" onclick="selectLineType('hip')" style="border-color:var(--hip-col);color:var(--hip-col);">隅棟</button>
+      <button class="lt-btn" data-t="valley" onclick="selectLineType('valley')" style="border-color:var(--valley-col);color:var(--valley-col);">谷</button>
+      <button class="lt-btn" data-t="keraba" onclick="selectLineType('keraba')" style="border-color:var(--keraba-col);color:var(--keraba-col);">ケラバ</button>
     </div>
     <div style="font-size:9px;color:var(--txt3);line-height:1.6;margin-bottom:8px;">
       軒先ライン上の点 または 既存の線の端点にスナップします<br>
@@ -376,7 +381,8 @@ header{
       </div>
       <div style="display:flex;align-items:center;gap:6px;margin-top:5px;">
         <span style="font-size:9px;color:var(--txt3);">寸 /10</span>
-        <input class="inp" id="pitchCustom" type="number" min="0.5" max="15" step="0.5" value="5" style="width:60px;" oninput="setDefaultPitch(+this.value,true)">
+        <input class="inp" id="pitchCustom" type="number" min="0.5" max="15" step="0.5" value="5"
+          style="width:60px;" oninput="setDefaultPitch(+this.value,true)">
         <span style="font-size:10px;color:var(--txt2);">/10</span>
       </div>
     </div>
@@ -393,7 +399,7 @@ header{
   <div class="sb-sec" id="propPanel" style="display:none;">
     <div class="sb-lbl">面のプロパティ</div>
     <div class="inp-row"><span class="inp-lbl">名称</span>
-      <input class="inp" id="pName" type="text" oninput="updateFaceProp(&#39;name&#39;,this.value)"></div>
+      <input class="inp" id="pName" type="text" oninput="updateFaceProp('name',this.value)"></div>
     <div style="margin-bottom:6px;">
       <span class="inp-lbl" style="display:block;margin-bottom:4px;">勾配</span>
       <div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:4px;max-height:72px;overflow-y:auto;padding:2px 0;" id="fPitchBtns">
@@ -429,12 +435,13 @@ header{
         <button class="pitch-btn" data-p="15" onclick="setFacePitch(15)">15</button>
       </div>
       <div style="display:flex;align-items:center;gap:5px;">
-        <input class="inp" id="pPitch" type="number" min="0.5" max="15" step="0.5" style="width:60px;" oninput="setFacePitch(+this.value,true)">
+        <input class="inp" id="pPitch" type="number" min="0.5" max="15" step="0.5" style="width:60px;"
+          oninput="setFacePitch(+this.value,true)">
         <span class="inp-unit">/10</span>
       </div>
     </div>
     <div class="inp-row"><span class="inp-lbl">色</span>
-      <input class="color-inp" id="pColor" type="color" oninput="updateFaceProp(&#39;color&#39;,this.value)">
+      <input class="color-inp" id="pColor" type="color" oninput="updateFaceProp('color',this.value)">
       <span style="font-size:9px;color:var(--txt3);margin-left:6px;">面の色</span></div>
   </div>
 
@@ -460,7 +467,7 @@ header{
 
 <!-- CANVAS -->
 <div class="canvas-wrap" id="cWrap">
-  <canvas id="c" width="1260" height="745" style="cursor: default;"></canvas>
+  <canvas id="c"></canvas>
 
   <!-- Unfold panel -->
   <div class="unfold-panel" id="unfoldPanel">
@@ -468,15 +475,70 @@ header{
       <span style="font-size:11px;font-weight:700;color:var(--amber);">展開図</span>
       <span id="ufStats" style="font-size:10px;color:var(--txt3);margin-left:8px;"></span>
       <div style="flex:1;"></div>
-      <button class="btn" onclick="setView(&#39;plan&#39;)" style="font-size:10px;padding:3px 9px;">← 平面図に戻る</button>
+      <button class="btn" onclick="setView('plan')" style="font-size:10px;padding:3px 9px;">← 平面図に戻る</button>
     </div>
     <div class="unfold-body" id="ufBody">
       <div style="color:var(--txt3);font-size:12px;">展開図を生成してください</div>
     </div>
+  <!-- Materials Takeoff Panel -->
+  <div class="unfold-panel" id="matPanel">
+    <div class="unfold-hdr">
+      <span style="font-size:11px;font-weight:700;color:var(--amber);">部材拾い出し</span>
+      <span style="font-size:9px;color:var(--txt3);margin-left:8px;">（面検出後に自動計算）</span>
+      <div style="flex:1;"></div>
+      <button class="btn" onclick="calcMaterials()" style="font-size:10px;padding:3px 9px;margin-right:6px;">🔄 再計算</button>
+      <button class="btn" onclick="setView('plan')" style="font-size:10px;padding:3px 9px;">← 平面図に戻る</button>
+    </div>
+    <div class="unfold-body" id="matBody" style="flex-direction:column;align-items:stretch;padding:20px 24px;gap:0;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+        <div style="font-size:11px;font-weight:700;color:var(--txt2);">工法：</div>
+        <label style="display:flex;align-items:center;gap:5px;cursor:pointer;">
+          <input type="radio" name="koho" value="cover" id="kohoCover" onchange="calcMaterials()" checked>
+          <span style="font-size:11px;color:var(--txt2);">カバー工法</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:5px;cursor:pointer;">
+          <input type="radio" name="koho" value="replace" id="kohoReplace" onchange="calcMaterials()">
+          <span style="font-size:11px;color:var(--txt2);">葺き替え</span>
+        </label>
+        <div style="margin-left:16px;font-size:11px;font-weight:700;color:var(--txt2);">屋根形状：</div>
+        <label style="display:flex;align-items:center;gap:5px;cursor:pointer;">
+          <input type="radio" name="katachi" value="simple" id="katachiSimple" onchange="calcMaterials()" checked>
+          <span style="font-size:11px;color:var(--txt2);">切妻</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:5px;cursor:pointer;">
+          <input type="radio" name="katachi" value="complex" id="katachiComplex" onchange="calcMaterials()">
+          <span style="font-size:11px;color:var(--txt2);">寄棟・複雑</span>
+        </label>
+        <input class="inp" id="bukenName" type="text" placeholder="物件名" style="width:160px;margin-left:12px;" oninput="calcMaterials()">
+        <span id="autoShapeHint" style="font-size:9px;color:var(--txt3);margin-left:8px;"></span>
+      </div>
+      <div style="overflow-x:auto;">
+        <table id="matTable" style="width:100%;border-collapse:collapse;font-size:11px;">
+          <thead>
+            <tr style="background:var(--s2);color:var(--txt3);">
+              <th style="padding:7px 10px;text-align:left;border-bottom:1px solid var(--b2);">部材名</th>
+              <th style="padding:7px 10px;text-align:left;border-bottom:1px solid var(--b2);">品番・規格</th>
+              <th style="padding:7px 10px;text-align:right;border-bottom:1px solid var(--b2);">数量</th>
+              <th style="padding:7px 10px;text-align:right;border-bottom:1px solid var(--b2);">単位</th>
+              <th style="padding:7px 10px;text-align:right;border-bottom:1px solid var(--b2);">根拠</th>
+            </tr>
+          </thead>
+          <tbody id="matTbody">
+            <tr><td colspan="5" style="padding:20px;text-align:center;color:var(--txt3);">展開図を生成してから拾い出しを行ってください</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div id="matSummary" style="margin-top:12px;padding:10px 12px;background:var(--s2);border-radius:6px;font-size:10px;color:var(--txt3);display:none;"></div>
+      <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end;">
+        <button class="btn primary" onclick="exportCSV()" style="font-size:10px;padding:5px 14px;">CSVエクスポート</button>
+      </div>
+    </div>
+  </div>
+
   </div>
 
   <div class="status">
-    <span class="s-pos" id="posLbl">X: 11.83m  Y: 7.28m</span>
+    <span class="s-pos" id="posLbl">X: — Y: —</span>
     <span id="msgLbl">ステップ1：柱芯ラインを描いてください</span>
     <span style="margin-left:auto;" id="zoomLbl">100%</span>
   </div>
@@ -574,6 +636,7 @@ let S = {
   ox:100, oy:100, zoom:1.0,
   isPanning:false, panStart:{x:0,y:0}, panOrigin:{x:0,y:0},
   mouseSnap:{x:0,y:0,snap:false,snapType:''},
+  matInitialized: false,
   gridMm: 455,
   snapMm: 455,
   hoverEdge: null,     // {faceId, idx}
@@ -1233,6 +1296,16 @@ function draw(){
   }
 
   // Axis labels
+  // ── 寸法線描画（ステップ1以降で表示）───────────────────────────────────
+  if(S.step >= 2 && S.eaveOutline.length >= 2){
+    // 軒先アウトライン寸法（水色、外側300mm）
+    drawPolyDims(S.eaveOutline, '#7dd3fc', 300);
+  }
+  if(S.step >= 1 && S.footprint.length >= 2){
+    // 柱芯寸法（アンバー、外側150mm）
+    drawPolyDims(S.footprint, '#f0a500', 150);
+  }
+
   drawAxisLabels(W,H);
 }
 
@@ -1434,6 +1507,113 @@ function drawGrid(W,H){
   ctx.beginPath();ctx.moveTo(ox-8,oy);ctx.lineTo(ox+8,oy);ctx.stroke();
   ctx.beginPath();ctx.moveTo(ox,oy-8);ctx.lineTo(ox,oy+8);ctx.stroke();
 }
+
+// ── 寸法線描画 ────────────────────────────────────────────────────────
+// drawDimLine: 画面座標で寸法線を描く
+// offset > 0 = 法線方向（向き）にずらす
+function drawDimLine(ax, ay, bx, by, labelMm, offsetPx, color){
+  const dx=bx-ax, dy=by-ay;
+  const len=Math.hypot(dx,dy);
+  if(len < 6) return;
+  const ux=dx/len, uy=dy/len;       // 単位接線
+  const nx=-uy,   ny=ux;             // 左向き法線
+
+  const ox=nx*offsetPx, oy=ny*offsetPx;
+
+  // 引出線（端点から寸法線まで）
+  ctx.strokeStyle=color+'99'; ctx.lineWidth=1; ctx.setLineDash([2,2]);
+  ctx.beginPath(); ctx.moveTo(ax,ay);       ctx.lineTo(ax+ox, ay+oy); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(bx,by);       ctx.lineTo(bx+ox, by+oy); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // 寸法線本体
+  const sx1=ax+ox, sy1=ay+oy;
+  const sx2=bx+ox, sy2=by+oy;
+  ctx.strokeStyle=color; ctx.lineWidth=1.2;
+  ctx.beginPath(); ctx.moveTo(sx1,sy1); ctx.lineTo(sx2,sy2); ctx.stroke();
+
+  // 矢印
+  const aw=6, aw2=2.5;
+  ctx.fillStyle=color;
+  [[sx1,sy1,1],[sx2,sy2,-1]].forEach(([px,py,dir])=>{
+    ctx.beginPath();
+    ctx.moveTo(px, py);
+    ctx.lineTo(px+ux*aw*dir - nx*aw2*dir, py+uy*aw*dir - ny*aw2*dir);
+    ctx.lineTo(px+ux*aw*dir + nx*aw2*dir, py+uy*aw*dir + ny*aw2*dir);
+    ctx.closePath(); ctx.fill();
+  });
+
+  // ラベル（背景付き）
+  const mx=(sx1+sx2)/2, my=(sy1+sy2)/2;
+  const label = labelMm >= 1000
+    ? Math.round(labelMm)+'mm'
+    : Math.round(labelMm)+'mm';
+  // 常にmm表示
+  const labelFinal = Math.round(labelMm)+'mm';
+  ctx.font = 'bold 10px IBM Plex Mono';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  const tw = ctx.measureText(labelFinal).width;
+  const pad = 4;
+  // 背景
+  ctx.fillStyle = 'rgba(12,14,20,0.92)';
+  ctx.fillRect(mx-tw/2-pad, my-8, tw+pad*2, 16);
+  // 枠
+  ctx.strokeStyle = color+'66'; ctx.lineWidth=0.8;
+  ctx.strokeRect(mx-tw/2-pad, my-8, tw+pad*2, 16);
+  // テキスト
+  ctx.fillStyle = color;
+  ctx.fillText(labelFinal, mx, my+1);
+  ctx.textBaseline = 'alphabetic';
+}
+
+// ポリゴン重心を計算
+function polygonCentroid(verts){
+  let cx=0, cy=0;
+  for(const v of verts){ cx+=v.x; cy+=v.y; }
+  return {x:cx/verts.length, y:cy/verts.length};
+}
+
+// ポリゴンの各辺の外向き寸法を描画
+function drawPolyDims(verts, color, offsetMm){
+  if(verts.length < 2) return;
+  const n = verts.length;
+  const centroid = polygonCentroid(verts);
+  const offsetPx = sc(offsetMm); // mm → px
+
+  for(let i=0;i<n;i++){
+    const a=verts[i], b=verts[(i+1)%n];
+    const dx=b.x-a.x, dy=b.y-a.y;
+    const segLen=Math.hypot(dx,dy);
+    if(segLen < 100) continue; // 100mm未満は省略
+
+    // 辺の中点
+    const mx=(a.x+b.x)/2, my=(a.y+b.y)/2;
+    // 法線（左向き）
+    const nx=-dy/segLen, ny=dx/segLen;
+    // 重心から中点方向ベクトル
+    const toCx=mx-centroid.x, toCy=my-centroid.y;
+    // 法線が外向きかどうか（内積で判定）
+    const dot = nx*toCx + ny*toCy;
+    // 外向きになるように符号調整
+    const sign = dot >= 0 ? 1 : -1;
+
+    const [ax,ay] = toSc(a.x, a.y);
+    const [bx_s,by_s] = toSc(b.x, b.y);
+    
+    // オフセットは外向きにoffsetPx
+    const finalOffset = sign * Math.abs(offsetPx);
+    
+    // ラベルに表示する長さ（水平辺→幅, 垂直辺→高さ, 斜め辺→実長）
+    const angle = Math.abs(Math.atan2(dy,dx)*180/Math.PI);
+    let dimLen;
+    if(angle < 5 || angle > 175) dimLen = Math.abs(dx);       // 水平
+    else if(angle > 85 && angle < 95) dimLen = Math.abs(dy);  // 垂直
+    else dimLen = segLen;                                       // 斜め
+
+    drawDimLine(ax, ay, bx_s, by_s, dimLen, finalOffset, color);
+  }
+}
+
 
 function drawAxisLabels(W,H){
   const gPx=sc(S.gridMm*2);
@@ -1758,6 +1938,7 @@ function detectFaces(){
   }));
   S.colorIdx=S.faces.length;
 
+  S.matInitialized = false; // 面が変わったら拾い出しの自動判定をリセット
   document.getElementById('st4').classList.add('done');
   goStep(4);
   updateFaceList();
@@ -1928,10 +2109,12 @@ function showHint(msg,dur=2000){
 
 function setView(v){
   S.view=v;
-  const panel=document.getElementById('unfoldPanel');
-  panel.classList.toggle('open',v==='unfold');
+  document.getElementById('unfoldPanel').classList.toggle('open',v==='unfold');
+  document.getElementById('matPanel').classList.toggle('open',v==='materials');
   document.getElementById('vtPlan').classList.toggle('on',v==='plan');
   document.getElementById('vtUnfold').classList.toggle('on',v==='unfold');
+  document.getElementById('vtMat').classList.toggle('on',v==='materials');
+  if(v==='materials') calcMaterials();
 }
 
 // ====================================================
@@ -2018,6 +2201,302 @@ function eaveEditDeleteVert(idx){
   S.eaveOutline.splice(idx,1);
   S.hoverEaveVert=null;
   draw();
+}
+
+
+// ============================================================
+// 部材拾い出し計算エンジン
+// ============================================================
+
+// 屋根形状判定（切妻=simple / 寄棟・複雑=complex）
+// ridgeLinesにhip(隅棟)がある → complex
+function detectRoofShape(){
+  return S.ridgeLines.some(l=>l.type==='hip'||l.type==='valley') ? 'complex' : 'simple';
+}
+
+// eave/keraba/ridge/hip/valley の実長合計を計算
+function calcEdgeLengths(){
+  // unfoldFaceで実際の3D長さ（勾配考慮済み）を使用する
+  // eaveは平面=実長なので平面距離でも正確だが、
+  // 棟・隅棟・ケラバ・谷は勾配分だけ長くなるためunfoldFaceのactualLensを使用
+  const lens = {eave:0, keraba:0, ridge:0, hip:0, valley:0};
+  // 棟・隅棟・谷は2面で共有するため重複排除
+  const counted = new Set();
+
+  for(const f of S.faces){
+    // unfoldFaceで3D実長を取得
+    const u = unfoldFace(f);
+    const n = f.vertices.length;
+    for(let i=0;i<n;i++){
+      const e = f.edges[i];
+      if(!e) continue;
+      const va=f.vertices[i], vb=f.vertices[(i+1)%n];
+      const key = [va.x.toFixed(1)+','+va.y.toFixed(1), vb.x.toFixed(1)+','+vb.y.toFixed(1)].sort().join('|');
+      // 実長: unfoldFaceが成功した場合はactualLens、失敗時はplan長さで代替
+      const actualLen = u ? (u.actualLens[i] || 0) : Math.hypot(vb.x-va.x, vb.y-va.y);
+      if(e.type==='eave'){
+        // 軒先は各面で独立（重複なし）
+        lens.eave += actualLen;
+      } else if(!counted.has(key)){
+        counted.add(key);
+        if(e.type==='keraba') lens.keraba += actualLen;
+        else if(e.type==='ridge') lens.ridge += actualLen;
+        else if(e.type==='hip')   lens.hip   += actualLen;
+        else if(e.type==='valley') lens.valley += actualLen;
+      }
+    }
+  }
+  return lens;
+}
+
+// 棟板金の加工点カウント
+function countRidgeJunctions(){
+  // EPS for point equality
+  const EPS2 = 1;
+  const ptKey = (p) => Math.round(p.x)+','+Math.round(p.y);
+
+  // Collect all ridge/hip endpoints
+  const ridgeHip = S.ridgeLines.filter(l=>l.type==='ridge'||l.type==='hip');
+  const kerabaLines = S.ridgeLines.filter(l=>l.type==='keraba');
+
+  // Eave outline vertices (軒先ライン)
+  const eaveVerts = S.eaveOutline;
+
+  function isOnEave(pt){
+    for(let i=0;i<eaveVerts.length;i++){
+      const a=eaveVerts[i], b=eaveVerts[(i+1)%eaveVerts.length];
+      const abx=b.x-a.x, aby=b.y-a.y, len2=abx*abx+aby*aby;
+      if(len2<1) continue;
+      const t=((pt.x-a.x)*abx+(pt.y-a.y)*aby)/len2;
+      if(t>=-0.01&&t<=1.01){
+        const fx=a.x+t*abx, fy=a.y+t*aby;
+        if(Math.hypot(pt.x-fx,pt.y-fy)<EPS2*5) return true;
+      }
+    }
+    return false;
+  }
+
+  function isOnKeraba(pt){
+    for(const l of kerabaLines){
+      const a=l.a,b=l.b;
+      const abx=b.x-a.x,aby=b.y-a.y,len2=abx*abx+aby*aby;
+      if(len2<1) continue;
+      const t=((pt.x-a.x)*abx+(pt.y-a.y)*aby)/len2;
+      if(t>=-0.01&&t<=1.01){
+        const fx=a.x+t*abx,fy=a.y+t*aby;
+        if(Math.hypot(pt.x-fx,pt.y-fy)<EPS2*5) return true;
+      }
+    }
+    return false;
+  }
+
+  // Collect all endpoints
+  const allPts = [];
+  for(const l of ridgeHip){ allPts.push({pt:l.a,line:l}); allPts.push({pt:l.b,line:l}); }
+
+  // Group by position
+  const groups = {};
+  for(const {pt,line} of allPts){
+    const k = Math.round(pt.x/5)*5+','+Math.round(pt.y/5)*5;
+    if(!groups[k]) groups[k]={pt,lines:[]};
+    if(!groups[k].lines.includes(line)) groups[k].lines.push(line);
+  }
+
+  let kenzen=0, sanza=0, tomoe=0;
+  for(const k of Object.keys(groups)){
+    const g=groups[k];
+    const pt=g.pt;
+    const lines=g.lines;
+    const ridgeCount=lines.filter(l=>l.type==='ridge').length;
+    const hipCount=lines.filter(l=>l.type==='hip').length;
+    const onEave=isOnEave(pt);
+    const onKeraba=isOnKeraba(pt);
+
+    if(onEave && (ridgeCount+hipCount)>=1){
+      // 剣先: 棟または隅棟の端点が軒先ライン上
+      kenzen++;
+    } else if(onKeraba && ridgeCount>=1){
+      // 巴: 棟端部がケラバライン上（棟+ケラバ2本が集まる）
+      tomoe++;
+    } else if(ridgeCount>=1 && hipCount>=1){
+      // 三叉: 棟と隅棟がT字交点
+      sanza++;
+    }
+  }
+  return {kenzen, sanza, tomoe};
+}
+
+// 全実面積（m²）
+function calcTotalRealArea(){
+  let total=0;
+  for(const f of S.faces){
+    const a=polyArea(f.vertices);
+    total+=a*Math.sqrt(1+(f.pitch/10)**2);
+  }
+  return total/1e6; // m²
+}
+
+function calcMaterials(){
+  if(S.faces.length===0){
+    const tbody=document.getElementById('matTbody');
+    if(tbody) tbody.innerHTML=`<tr><td colspan="5" style="padding:24px;text-align:center;">
+      <div style="color:var(--amber);font-weight:700;font-size:12px;margin-bottom:8px;">⚠ まず屋根面を検出してください</div>
+      <div style="color:var(--txt3);font-size:11px;line-height:1.8;">
+        ① 柱芯を描く<br>
+        ② 軒先アウトライン生成<br>
+        ③ 棟・隅棟ラインを描く<br>
+        ④ 「屋根面を自動検出」ボタンを押す ← ここまで完了してから部材拾い出しへ
+      </div>
+    </td></tr>`;
+    const sum=document.getElementById('matSummary');
+    if(sum) sum.style.display='none';
+    return;
+  }
+
+  const koho = document.querySelector('input[name="koho"]:checked')?.value || 'cover';
+  // 初回のみ自動判定で形状ラジオをセット
+  const katachiAuto = detectRoofShape();
+  if(!S.matInitialized){
+    S.matInitialized = true;
+    const el = document.getElementById(katachiAuto==='complex'?'katachiComplex':'katachiSimple');
+    if(el) el.checked = true;
+  }
+  const katachiSel = document.querySelector('input[name="katachi"]:checked')?.value || 'simple';
+  const isComplex = katachiSel==='complex';
+  const lossRate = isComplex ? 1.3 : 1.1;
+
+  const lens = calcEdgeLengths();
+  const junctions = countRidgeJunctions();
+  const totalReal = calcTotalRealArea();
+
+  // ── 板金役物 単位:mm ─────────────────────────────────────────────────
+  const EFF_NORMAL  = 2677; // 重ね50mm
+  const EFF_RIDGE   = 2577; // 重ね150mm
+  const FULL        = 2727; // 1本長さ
+
+  // 軒先唐草
+  const toHon = (mm, eff) => Math.ceil(mm/eff);
+  const nokuLen = lens.eave;
+  const nokuHon = toHon(nokuLen, EFF_NORMAL);
+
+  // ケラバ水切
+  const kerabaLen = lens.keraba;
+  const kerabaHon = toHon(kerabaLen, EFF_NORMAL);
+
+  // 谷板金
+  const tanLen = lens.valley;
+  const tanHon = toHon(tanLen, EFF_NORMAL);
+
+  // 棟・隅棟板金（現場加工）
+  const ridgeHipLen = lens.ridge + lens.hip;
+  const processLen = junctions.kenzen*300 + junctions.sanza*150 + junctions.tomoe*300;
+  const muneHon = Math.ceil((ridgeHipLen + processLen) / EFF_RIDGE);
+
+  // ── ルーフィング ──────────────────────────────────────────────────────
+  const ROLL_EFF = 18; // 18m² (重ね代100mm考慮)
+  const roolingHon = Math.ceil(totalReal * lossRate / ROLL_EFF);
+  const roolingName = koho==='cover' ? 'タディスセルフカバー' : 'ニューライナールーフィング';
+  const roolingKind = koho==='cover' ? '粘着タイプ 20m×1m' : 'ステープル留め 20m×1m';
+
+  // ── 屋根材（スーパーガルテクト）─────────────────────────────────────
+  const CASE_SQM = 4.71;
+  const garuCase = Math.ceil(totalReal * lossRate / CASE_SQM);
+
+  // ── 唐草品番（工法で切替）────────────────────────────────────────────
+  const nokuName = koho==='cover' ? '改修用唐草SB' : '改修用唐草D';
+  const nokuSpec = koho==='cover' ? '雨どい取り替え不要・2,727mm' : '雨どい取り替えあり・2,727mm';
+
+  // ── テーブル描画 ─────────────────────────────────────────────────────
+  const rows = [
+    // [部材名, 品番, 数量, 単位, 根拠]
+    ['屋根材', 'スーパーガルテクト（標準 2,960mm）', garuCase, 'ケース',
+     `実${totalReal.toFixed(2)}m²×${lossRate}÷4.71m²/cs`],
+    ['ルーフィング', roolingName, roolingHon, '巻',
+     `実${totalReal.toFixed(2)}m²×${lossRate}÷18m²/巻（重ね代考慮）  ${roolingKind}`],
+    ['軒先唐草', nokuName, nokuHon, '本',
+     `軒先${Math.round(nokuLen)}mm÷2,677mm  ${nokuSpec}`],
+    ['ケラバ水切', 'ケラバ水切（2,727mm）', kerabaHon, '本',
+     `ケラバ${Math.round(kerabaLen)}mm÷2,677mm`],
+    ['谷板金', '谷樋D（Ⅱ）（2,727mm）', tanHon, '本',
+     `谷${Math.round(tanLen)}mm÷2,677mm`],
+    ['棟・隅棟板金', '棟・隅棟包みD（現場加工・2,727mm）', muneHon, '本',
+     `(棟隅棟${Math.round(ridgeHipLen)}mm+剣先${junctions.kenzen}×300+三叉${junctions.sanza}×150+巴${junctions.tomoe}×300)÷2,577mm`],
+  ];
+
+  const tbody = document.getElementById('matTbody');
+  tbody.innerHTML = rows.map(([name,spec,qty,unit,basis])=>{
+    const zeroClass = qty===0?'style="color:var(--txt3);"':'';
+    return `<tr style="border-bottom:1px solid var(--b1);">
+      <td style="padding:7px 10px;color:var(--txt2);font-weight:600;">${name}</td>
+      <td style="padding:7px 10px;color:var(--txt3);font-size:10px;">${spec}</td>
+      <td style="padding:7px 10px;text-align:right;font-family:IBM Plex Mono,monospace;font-size:13px;color:var(--amber);font-weight:700;" ${zeroClass}>${qty===0?'—':qty}</td>
+      <td style="padding:7px 10px;text-align:right;color:var(--txt3);">${unit}</td>
+      <td style="padding:7px 10px;color:var(--txt3);font-size:9px;font-family:IBM Plex Mono,monospace;">${basis}</td>
+    </tr>`;
+  }).join('');
+
+  // Summary
+  const summaryEl = document.getElementById('matSummary');
+  summaryEl.style.display='block';
+  summaryEl.innerHTML=`
+    工法: <b style="color:var(--amber)">${koho==='cover'?'カバー工法':'葺き替え'}</b> &nbsp;|&nbsp;
+    形状: <b style="color:var(--amber)">${isComplex?'寄棟・複雑（×1.3）':'切妻（×1.1）'}</b> &nbsp;|&nbsp;
+    実面積合計: <b style="color:var(--amber)">${totalReal.toFixed(2)}m²</b> &nbsp;|&nbsp;
+    加工点: 剣先<b>${junctions.kenzen}</b>・三叉<b>${junctions.sanza}</b>・巴<b>${junctions.tomoe}</b>
+    <span style="margin-left:12px;color:#fde68a;font-size:9px;">
+      ※数量はロス・重ね代考慮済みの発注数量です。在庫・端材は別途考慮してください。
+    </span>
+  `;
+
+  // Auto-detect shape hint (show to user without overwriting)
+  const autoHint = document.getElementById('autoShapeHint');
+  if(autoHint) autoHint.textContent = `自動判定: ${katachiAuto==='complex'?'寄棟・複雑':'切妻'}`;
+}
+
+function exportCSV(){
+  if(S.faces.length===0){ alert('展開図を生成してください'); return; }
+  const koho = document.querySelector('input[name="koho"]:checked')?.value||'cover';
+  const isComplex = document.querySelector('input[name="katachi"]:checked')?.value==='complex';
+  const lossRate = isComplex?1.3:1.1;
+  const buken = document.getElementById('bukenName')?.value||'未設定';
+  const lens = calcEdgeLengths();
+  const junctions = countRidgeJunctions();
+  const totalReal = calcTotalRealArea();
+  const EFF_NORMAL=2677,EFF_RIDGE=2577;
+  const ROLL_EFF=18,CASE_SQM=4.71;
+  const nokuName = koho==='cover'?'改修用唐草SB':'改修用唐草D';
+  const roolingName = koho==='cover'?'タディスセルフカバー':'ニューライナールーフィング';
+  const nokuLen=lens.eave, kerabaLen=lens.keraba, tanLen=lens.valley;
+  const ridgeHipLen=lens.ridge+lens.hip;
+  const processLen=junctions.kenzen*300+junctions.sanza*150+junctions.tomoe*300;
+
+  const rows=[
+    ['物件名',buken,'','','',''],
+    ['工法', koho==='cover'?'カバー工法':'葺き替え','','','',''],
+    ['屋根形状', isComplex?'寄棟・複雑':'切妻','ロス率', lossRate,'',''],
+    ['','','','','',''],
+    ['部材名','品番','数量','単位','根拠','備考'],
+    ['屋根材','スーパーガルテクト（標準 2,960mm）',Math.ceil(totalReal*lossRate/CASE_SQM),'ケース',`実${totalReal.toFixed(2)}m²×${lossRate}÷4.71m²/cs`,'アイジー工業'],
+    ['ルーフィング',roolingName,Math.ceil(totalReal*lossRate/ROLL_EFF),'巻',`実${totalReal.toFixed(2)}m²×${lossRate}÷18m²/巻`,'田島ルーフィング'],
+    ['軒先唐草',nokuName+'（2,727mm）',Math.ceil(nokuLen/EFF_NORMAL),'本',`${Math.round(nokuLen)}mm÷2,677mm`,'アイジー工業'],
+    ['ケラバ水切','ケラバ水切（2,727mm）',Math.ceil(kerabaLen/EFF_NORMAL),'本',`${Math.round(kerabaLen)}mm÷2,677mm`,'アイジー工業'],
+    ['谷板金','谷樋D（Ⅱ）（2,727mm）',Math.ceil(tanLen/EFF_NORMAL),'本',`${Math.round(tanLen)}mm÷2,677mm`,'アイジー工業'],
+    ['棟・隅棟板金','棟・隅棟包みD（現場加工・2,727mm）',Math.ceil((ridgeHipLen+processLen)/EFF_RIDGE),'本',`棟隅棟${Math.round(ridgeHipLen)}mm+加工${Math.round(processLen)}mm÷2,577mm`,'アイジー工業'],
+    ['','','','','',''],
+    ['加工点詳細','剣先',junctions.kenzen,'箇所','×300mm',''],
+    ['','三叉',junctions.sanza,'箇所','×150mm',''],
+    ['','巴',junctions.tomoe,'箇所','×300mm',''],
+    ['','','','','',''],
+    ['実面積合計（m²）',totalReal.toFixed(2),'','','',''],
+  ];
+
+  const bom = '\uFEFF';
+  const csv = bom + rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\r\n');
+  const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download=`部材拾い出し_${buken}_${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
 }
 
 // ====================================================
@@ -2325,6 +2804,5 @@ function exportSVG(){
 resize();
 draw();
 </script>
-
-
-</body></html>
+</body>
+</html>
